@@ -20,23 +20,38 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filepath);
 
-    return await openDatabase(path, onCreate: _createDb, version: 1);
+    // if i want update the database,
+    // i before create the update policy them change the version of database
+    return await openDatabase(
+      path,
+      onCreate: _createDb,
+      version: 2,
+      onUpgrade: _updateDB,
+    );
   }
 
   Future _createDb(Database db, int version) async {
     await db.execute('''
-    CREATE TABLE seller(
+     CREATE TABLE seller(
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    name TEXT);
+    name TEXT,
+    phone_number TEXT);
     CREATE TABLE concept(
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
     concept TEXT,
     id_seller INTEGER,
+    created_at DATE,
     init_total REAL,
     current_total REAL,
-    FOREIGN KEY(id_seller) REFERENCES seller(id) ON DELETE CASCADE)'
-    '''
-    );
+    FOREIGN KEY(id_seller) REFERENCES seller(id) ON DELETE CASCADE);
+    ''');
+  }
+
+  Future _updateDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      await db.execute('''
+      ''');
+    }
   }
 
   Future<void> close() async {
