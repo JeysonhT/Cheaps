@@ -1,10 +1,12 @@
-import 'package:cheaps/models/seller.dart';
 import 'package:cheaps/providers/services/seller_provider.dart';
+import 'package:cheaps/ui/components/seller_card.dart';
+import 'package:cheaps/ui/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.title});
+
   final String title;
 
   @override
@@ -15,23 +17,32 @@ class MyHomePage extends StatelessWidget {
         title: Text(title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: ListView.builder(
-        itemCount: provider.sellers.length,
-        itemBuilder: (context, index) {
-          final seller = provider.sellers[index];
-          return ListTile(
-            title: Text(seller.name),
-            trailing: IconButton(
-              onPressed: () => provider.deleteSeller(seller.id!),
-              icon: Icon(Icons.delete, color: Colors.red),
+      body: (provider.sellers.isEmpty)
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Primero ingresa un vendedor",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20, color: Colors.pinkAccent),
+                ),
+              ],
+            )
+          : Padding(
+              padding: EdgeInsetsGeometry.all(10),
+              child: ListView.builder(
+                itemCount: provider.sellers.length,
+                itemBuilder: (context, index) {
+                  final seller = provider.sellers[index];
+                  return SellerCard(seller: seller);
+                },
+              ),
             ),
-          );
-        },
-      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => provider.saveSeller(Seller(name: "Jimmy")),
+        backgroundColor: UiColors.frostedMint,
+        onPressed: () => Navigator.pushNamed(context, 'addSeller'),
         tooltip: 'agregar vendedor',
-        child: Icon(Icons.add, color: Colors.greenAccent),
+        child: Icon(Icons.add, color: Colors.black54),
       ),
     );
   }
