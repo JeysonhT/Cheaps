@@ -1,4 +1,4 @@
-import 'package:cheaps/ui/components/concept_form.dart';
+import 'package:cheaps/ui/components/concept/concept_form.dart';
 import 'package:flutter/material.dart';
 
 class AddConcept extends StatelessWidget {

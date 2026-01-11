@@ -1,7 +1,7 @@
 import 'package:cheaps/models/concept.dart';
 import 'package:cheaps/providers/services/concept_provider.dart';
 import 'package:cheaps/ui/components/communication_components.dart';
-import 'package:cheaps/ui/components/concept_form.dart';
+import 'package:cheaps/ui/components/concept/concept_form.dart';
 import 'package:cheaps/ui/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

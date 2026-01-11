@@ -7,5 +7,12 @@ abstract interface class ConceptRepository {
 
   void deleteConcept(int idConcept, int idSeller);
 
-  Future<void> updateConcept(Concept concept);
+  Future<void> updateConcept(
+    int idConcept,
+    double mount,
+    double currentMount,
+    int idSeller,
+  );
+
+  Future<void> getCurrentConcept(int idConcept);
 }

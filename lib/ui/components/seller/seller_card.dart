@@ -3,7 +3,7 @@ import 'package:cheaps/ui/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/seller.dart';
+import '../../../models/seller.dart';
 
 class SellerCard extends StatelessWidget {
   const SellerCard({super.key, required this.seller});
