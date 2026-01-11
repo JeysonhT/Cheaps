@@ -1,7 +1,9 @@
 import 'package:cheaps/providers/services/concept_provider.dart';
+import 'package:cheaps/providers/services/payments_provider.dart';
 import 'package:cheaps/providers/services/seller_provider.dart';
 import 'package:cheaps/ui/ui_colors.dart';
 import 'package:cheaps/ui/views/add_concept.dart';
+import 'package:cheaps/ui/views/concept_page.dart';
 import 'package:cheaps/ui/views/homepage.dart';
 import 'package:cheaps/ui/views/add_sellers.dart';
 import 'package:cheaps/ui/views/seller_page.dart';
@@ -23,18 +25,20 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => SellerProvider()..getSellers()),
         ChangeNotifierProvider(create: (_) => ConceptProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Cheaps',
         initialRoute: '/',
         routes: {
-          '/': (context) => MyHomePage(title: 'Mis deudas'),
+          '/': (context) => MyHomePage(title: 'Cheaps App'),
           'addSeller': (context) => AddSellers(title: "Añadir vendedor"),
           'sellerPage': (context) =>
               SellerPage(title: 'Deudas con el vendedor'),
           'addConcept': (context) =>
               AddConcept(title: "Añadir concepto de deuda"),
+          'conceptPage': (context) => ConceptPage(title: 'Detalles de deuda'),
         },
         theme: ThemeData(colorScheme: .fromSeed(seedColor: UiColors.mauve)),
       ),

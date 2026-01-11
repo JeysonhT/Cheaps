@@ -1,5 +1,5 @@
 import 'package:cheaps/providers/services/seller_provider.dart';
-import 'package:cheaps/ui/components/seller_form.dart';
+import 'package:cheaps/ui/components/seller/seller_form.dart';
 import 'package:cheaps/ui/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,8 +17,8 @@ class SellerFormState extends State<SellerForm> {
     final provider = context.watch<SellerProvider>();
     return Form(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.onUnfocus,
       child: Column(
-        spacing: 10,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
@@ -34,6 +34,7 @@ class SellerFormState extends State<SellerForm> {
             controller: nameController,
             maxLines: 1,
             keyboardType: TextInputType.name,
+            textCapitalization: TextCapitalization.words,
             validator: (value) {
               if (value == null || value.isEmpty || value.length < 3) {
                 return 'ingrese un nombre valido';
@@ -46,6 +47,7 @@ class SellerFormState extends State<SellerForm> {
               contentPadding: EdgeInsets.all(5),
             ),
           ),
+          SizedBox(height: 10), // Added SizedBox for spacing
           TextFormField(
             controller: phoneNumberController,
             maxLines: 1,
@@ -62,6 +64,7 @@ class SellerFormState extends State<SellerForm> {
               label: Text('Ingrese el numero de telefono del vendedor'),
             ),
           ),
+          SizedBox(height: 10), // Added SizedBox for spacing
           ElevatedButton(
             onPressed: () => {
               if (nameController.text.isNotEmpty &&
@@ -85,6 +88,7 @@ class SellerFormState extends State<SellerForm> {
             ),
             child: Text('Guardar'),
           ),
+          SizedBox(height: 10), // Added SizedBox for spacing
           Text(
             'disclamer: los gastos relacionados se guardan por separado desde los vendedores',
             textAlign: TextAlign.center,

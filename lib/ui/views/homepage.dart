@@ -1,5 +1,5 @@
 import 'package:cheaps/providers/services/seller_provider.dart';
-import 'package:cheaps/ui/components/seller_card.dart';
+import 'package:cheaps/ui/components/seller/seller_card.dart';
 import 'package:cheaps/ui/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +14,10 @@ class MyHomePage extends StatelessWidget {
     final provider = context.watch<SellerProvider>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: (provider.sellers.isEmpty)

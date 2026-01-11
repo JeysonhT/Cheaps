@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,7 +26,7 @@ class DatabaseHelper {
     return await openDatabase(
       path,
       onCreate: _createDb,
-      version: 2,
+      version: 3,
       onUpgrade: _updateDB,
     );
   }
@@ -44,11 +45,18 @@ class DatabaseHelper {
     init_total REAL,
     current_total REAL,
     FOREIGN KEY(id_seller) REFERENCES seller(id) ON DELETE CASCADE);
+    CREATE TABLE payments(
+      id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+      id_concept INTEGER,
+      pay REAL,
+      pay_at TEXT,
+      FOREIGN KEY(id_concept) REFERENCES concept(id) ON DELETE CASCADE);
     ''');
   }
 
   Future _updateDB(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 3) {
+    if (oldVersion < 4) {
+      debugPrint('Creando la tabla ...');
       await db.execute('''
       ''');
     }

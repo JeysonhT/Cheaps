@@ -8,6 +8,10 @@ class ConceptProvider extends ChangeNotifier implements ConceptRepository {
 
   List<Concept> get concepts => _concepts;
 
+  Concept? _concept;
+
+  Concept get currentConcept => _concept!;
+
   @override
   void deleteConcept(int idConcept, int idSeller) async {
     final db = await DatabaseHelper.instance.database;
@@ -29,9 +33,23 @@ class ConceptProvider extends ChangeNotifier implements ConceptRepository {
   }
 
   @override
-  Future<void> updateConcept(Concept concept) {
-    // TODO: implement updateConcept
-    throw UnimplementedError();
+  Future<void> updateConcept(
+    int idConcept,
+    double mount,
+    double currentMount,
+    int idSeller,
+  ) async {
+    final db = await DatabaseHelper.instance.database;
+
+    await db.update(
+      'concept',
+      {'current_total': currentMount - mount},
+      where: 'id = ?',
+      whereArgs: [idConcept],
+    );
+
+    await getCurrentConcept(idConcept);
+    await getConcepts(idSeller);
   }
 
   @override
@@ -40,5 +58,20 @@ class ConceptProvider extends ChangeNotifier implements ConceptRepository {
 
     await db.insert('concept', concept.toMap());
     await getConcepts(idSeller);
+  }
+
+  @override
+  Future<void> getCurrentConcept(int idConcept) async {
+    final db = await DatabaseHelper.instance.database;
+
+    List result = await db.query(
+      'concept',
+      where: 'id = ?',
+      whereArgs: [idConcept],
+    );
+
+    _concept = result.map((data) => Concept.fromMap(data)).first;
+
+    notifyListeners();
   }
 }
