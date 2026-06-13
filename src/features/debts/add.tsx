@@ -65,6 +65,11 @@ export default function AddDebtScreen() {
   };
 
   const handleSave = async () => {
+    if (!selectedCreditorId.trim()) {
+      setErrorMsg("El id del acreedor es necesario");
+      return;
+    }
+
     if (!name.trim()) {
       setErrorMsg("El nombre de la deuda es requerido");
       return;
@@ -193,17 +198,6 @@ export default function AddDebtScreen() {
 
               {isDropdownOpen && (
                 <View style={styles.dropdownList}>
-                  <Pressable
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setSelectedCreditorId("");
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Label style={styles.dropdownItemText}>
-                      Ninguno (Sin acreedor)
-                    </Label>
-                  </Pressable>
                   {creditors.map((c) => (
                     <Pressable
                       key={c.id}

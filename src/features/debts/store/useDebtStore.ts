@@ -1,8 +1,13 @@
+import { userService } from "@/services/userService";
+import {
+  CreateDebtDTO,
+  CreatePayDebtDTO,
+  DebtWithCreditor,
+  PayDebt,
+} from "@/types";
 import { create } from "zustand";
-import { DebtWithCreditor, CreateDebtDTO, PayDebt, CreatePayDebtDTO } from "@/types";
 import { debtService } from "../services/debtService";
 import { paymentService } from "../services/paymentService";
-import { userService } from "@/services/userService";
 
 interface DebtState {
   debts: DebtWithCreditor[];
@@ -13,7 +18,7 @@ interface DebtState {
   fetchDebts: () => Promise<void>;
   addDebt: (dto: CreateDebtDTO) => Promise<void>;
   deleteDebt: (id: number) => Promise<void>;
-  
+
   // Payments actions
   fetchPayments: (debtId: number) => Promise<void>;
   addPayment: (dto: CreatePayDebtDTO) => Promise<void>;
@@ -31,32 +36,38 @@ export const useDebtStore = create<DebtState>((set, get) => ({
     try {
       const debts = await debtService.getAll();
       const stats = await userService.getStats();
-      
+
       const currentMonth = new Date().toISOString().slice(0, 7);
       const totalPending = debts.reduce((sum, d) => sum + d.currentAmount, 0);
-      
+
       let maxDebtMonth = stats.maxDebtMonth;
-      
+
       // Si ha cambiado de mes (o es la primera vez que se registra), actualizar el mes e iniciar maxDebtMonth
       if (stats.maxDebtMonthLastUpdated !== currentMonth) {
         maxDebtMonth = totalPending;
         await userService.updateStats(totalPending, currentMonth);
       }
-      
+
       set({ debts, maxDebtMonth, isLoading: false });
     } catch (err: any) {
-      set({ error: err.message || "Error al cargar las deudas", isLoading: false });
+      set({
+        error: err.message || "Error al cargar las deudas",
+        isLoading: false,
+      });
     }
   },
 
   addDebt: async (dto) => {
     set({ isLoading: true, error: null });
     try {
-      const newDebt = await debtService.create(dto);
+      await debtService.create(dto);
       // Recargar deudas para que se calcule el total y se revise el mes
       await get().fetchDebts();
     } catch (err: any) {
-      set({ error: err.message || "Error al registrar la deuda", isLoading: false });
+      set({
+        error: err.message || "Error al registrar la deuda",
+        isLoading: false,
+      });
       throw err;
     }
   },
@@ -67,7 +78,10 @@ export const useDebtStore = create<DebtState>((set, get) => ({
       await debtService.delete(id);
       await get().fetchDebts();
     } catch (err: any) {
-      set({ error: err.message || "Error al eliminar la deuda", isLoading: false });
+      set({
+        error: err.message || "Error al eliminar la deuda",
+        isLoading: false,
+      });
     }
   },
 
@@ -88,7 +102,7 @@ export const useDebtStore = create<DebtState>((set, get) => ({
   addPayment: async (dto) => {
     try {
       const newPayment = await paymentService.create(dto);
-      
+
       // Actualizar pagos de esta deuda en el estado
       const currentList = get().payments[dto.idDebt] || [];
       set((state) => ({
@@ -97,7 +111,7 @@ export const useDebtStore = create<DebtState>((set, get) => ({
           [dto.idDebt]: [newPayment, ...currentList],
         },
       }));
-      
+
       // Recargar deudas para actualizar el saldo restante
       await get().fetchDebts();
     } catch (err: any) {

@@ -108,22 +108,26 @@ export async function migrateDbIfNeeded(db: SQLite.SQLiteDatabase) {
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
 }
 
-let db: SQLite.SQLiteDatabase | null = null;
+let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
-export async function getDb(): Promise<SQLite.SQLiteDatabase> {
-  if (db) {
-    return db;
+export function getDb(): Promise<SQLite.SQLiteDatabase> {
+  if (dbPromise) {
+    return dbPromise;
   }
 
-  try {
-    // openDatabaseAsync es asíncrono y devuelve una promesa.
-    const dbInstance = await SQLite.openDatabaseAsync(DB_NAME);
-    await migrateDbIfNeeded(dbInstance);
-    db = dbInstance;
-    console.log("Base de datos abierta y migrada exitosamente");
-    return db;
-  } catch (error) {
-    console.error("Error abriendo o migrando la base de datos:", error);
-    throw error;
-  }
+  dbPromise = (async () => {
+    try {
+      // openDatabaseAsync es asíncrono y devuelve una promesa.
+      const dbInstance = await SQLite.openDatabaseAsync(DB_NAME);
+      await migrateDbIfNeeded(dbInstance);
+      console.log("Base de datos abierta y migrada exitosamente");
+      return dbInstance;
+    } catch (error) {
+      dbPromise = null; // Permitir reintento si falla
+      console.error("Error abriendo o migrando la base de datos:", error);
+      throw error;
+    }
+  })();
+
+  return dbPromise;
 }

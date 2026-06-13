@@ -391,7 +391,7 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
       <Modal
         visible={isPayModalOpen}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setIsPayModalOpen(false)}
       >
         <KeyboardAvoidingView
@@ -867,15 +867,22 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     modalOverlay: {
       flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.4)",
-      justifyContent: "flex-end",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: sp[4],
     },
     modalContent: {
       backgroundColor: t.bgElevated,
-      borderTopLeftRadius: r.xl,
-      borderTopRightRadius: r.xl,
-      paddingBottom: sp[8],
+      borderRadius: r.lg,
+      width: "100%",
+      maxWidth: 360,
       maxHeight: "85%",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 10,
+      elevation: 5,
     },
     modalHeader: {
       flexDirection: "row",

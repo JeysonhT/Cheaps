@@ -2,7 +2,7 @@
   "expo": {
     "name": "Cheaps",
     "slug": "Cheaps",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "cheaps",
@@ -18,7 +18,7 @@
         "monochromeImage": "./src/assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.Cheaps"
+      "package": "com.jeysonhdev.Cheaps"
     },
     "web": {
       "bundler": "metro",

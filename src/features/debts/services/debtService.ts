@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/SqliteHelper";
-import { DebtWithCreditor, CreateDebtDTO } from "@/types";
+import { CreateDebtDTO, DebtWithCreditor } from "@/types";
 
 export interface DbDebtRow {
   id: number;
@@ -33,7 +33,7 @@ export const debtService = {
       LEFT JOIN creditor c ON d.id_creditor = c.id
       ORDER BY d.id DESC
     `);
-    
+
     return rows.map((row) => ({
       id: row.id,
       idCreditor: row.id_creditor,
@@ -54,44 +54,53 @@ export const debtService = {
 
   async create(dto: CreateDebtDTO): Promise<DebtWithCreditor> {
     const db = await getDb();
-    const result = await db.runAsync(
-      `INSERT INTO debts (id_creditor, type, pay_frecuency, name, debt_date, amount, current_amount) 
+    try {
+      const result = await db.runAsync(
+        `INSERT INTO debts (id_creditor, type, pay_frecuency, name, debt_date, amount, current_amount) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      dto.idCreditor || null,
-      dto.type,
-      dto.payFrecuency,
-      dto.name,
-      dto.debtDate,
-      dto.amount,
-      dto.currentAmount
-    );
-
-    // Si hay un acreedor, buscar sus datos para la respuesta
-    let creditorInfo = null;
-    if (dto.idCreditor) {
-      const cred = await db.getFirstAsync<{ name: string; phone_number: string | null }>(
-        "SELECT name, phone_number FROM creditor WHERE id = ?",
-        dto.idCreditor
+        dto.idCreditor ?? null,
+        dto.type ?? "personal",
+        dto.payFrecuency ?? 30,
+        dto.name ?? "",
+        dto.debtDate ?? new Date().toISOString().split("T")[0],
+        dto.amount ?? 0,
+        dto.currentAmount ?? 0,
       );
-      if (cred) {
-        creditorInfo = {
-          name: cred.name,
-          phoneNumber: cred.phone_number,
-        };
-      }
-    }
 
-    return {
-      id: result.lastInsertRowId,
-      idCreditor: dto.idCreditor,
-      type: dto.type,
-      payFrecuency: dto.payFrecuency,
-      name: dto.name,
-      debtDate: dto.debtDate,
-      amount: dto.amount,
-      currentAmount: dto.currentAmount,
-      creditor: creditorInfo,
-    };
+      // Si hay un acreedor, buscar sus datos para la respuesta
+      let creditorInfo = null;
+      if (dto.idCreditor) {
+        const cred = await db.getFirstAsync<{
+          name: string;
+          phone_number: string | null;
+        }>(
+          "SELECT name, phone_number FROM creditor WHERE id = ?",
+          dto.idCreditor,
+        );
+        if (cred) {
+          creditorInfo = {
+            name: cred.name,
+            phoneNumber: cred.phone_number,
+          };
+        }
+      }
+
+      return {
+        id: result.lastInsertRowId,
+        idCreditor: dto.idCreditor ?? null,
+        type: dto.type ?? "personal",
+        payFrecuency: dto.payFrecuency ?? 30,
+        name: dto.name ?? "",
+        debtDate: dto.debtDate ?? new Date().toISOString().split("T")[0],
+        amount: dto.amount ?? 0,
+        currentAmount: dto.currentAmount ?? 0,
+        creditor: creditorInfo,
+      };
+    } catch (e) {
+      let error = e as Error;
+      console.log(error.message);
+      throw e;
+    }
   },
 
   async delete(id: number): Promise<void> {
