@@ -1,10 +1,12 @@
-import Card from "@/components/Card";
-import { Label, SubTitle } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
-import { Creditor, DebtType, DebtWithCreditor } from "@/types";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import MaterialIcons, {
+  type MaterialIconsIconName,
+} from "@react-native-vector-icons/material-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View } from "react-native";
+import Card from "@/components/Card";
+import { HStack, Text, VStack } from "@/components/layout";
+import { makeStyles } from "@/hooks/useTheme";
+import type { Creditor, DebtType, DebtWithCreditor } from "@/types";
 
 interface SellerCardProps {
   creditor: Creditor;
@@ -44,36 +46,43 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
 
   return (
     <Card style={styles.card}>
-      <View style={styles.mainView}>
-        <View style={styles.header}>
+      <VStack gap="2">
+        <HStack align="center">
           <View style={styles.iconView}>
             <MaterialIcons
               name={
                 hasDebt
-                  ? (getDebtIcon(largestDebt!.type) as any)
+                  ? (getDebtIcon(largestDebt!.type) as MaterialIconsIconName)
                   : "corporate-fare"
               }
               color="#ffffff"
               size={24}
             />
           </View>
-          <View style={styles.textContainer}>
-            <Label style={styles.highlightText} numberOfLines={1}>
+          <VStack flex={1} justify="center" style={{ marginLeft: 8 }}>
+            <Text size="base" weight="bold" color="text" numberOfLines={1}>
               {creditor.name}
-            </Label>
-            <SubTitle numberOfLines={1}>
+            </Text>
+            <Text size="xs" color="textMuted" numberOfLines={1}>
               {hasDebt ? largestDebt!.name : "Sin deudas activas"}
-            </SubTitle>
-          </View>
-        </View>
+            </Text>
+          </VStack>
+        </HStack>
 
-        <View style={styles.progressSection}>
-          <View style={styles.bodyHead}>
-            <SubTitle>Progreso</SubTitle>
-            <SubTitle
-              style={styles.text}
-            >{`${Math.round(progressPct * 100)}%`}</SubTitle>
-          </View>
+        <VStack style={styles.progressSection}>
+          <HStack
+            justify="space-between"
+            align="center"
+            style={styles.bodyHead}
+          >
+            <Text size="xs" color="textMuted">
+              Progreso
+            </Text>
+            <Text
+              size="xs"
+              color="text"
+            >{`${Math.round(progressPct * 100)}%`}</Text>
+          </HStack>
           {/* Progress bar track */}
           <View style={styles.progressTrack}>
             {/* Gradient fill */}
@@ -90,13 +99,17 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
               ]}
             />
           </View>
-        </View>
+        </VStack>
 
-        <View style={styles.footer}>
-          <SubTitle>Restante</SubTitle>
-          <Label style={styles.highlightText}>{formatCurrency(current)}</Label>
-        </View>
-      </View>
+        <HStack justify="space-between" align="center" style={styles.footer}>
+          <Text size="xs" color="textMuted">
+            Restante
+          </Text>
+          <Text size="base" weight="bold" color="text">
+            {formatCurrency(current)}
+          </Text>
+        </HStack>
+      </VStack>
     </Card>
   );
 }
@@ -108,10 +121,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       width: 280,
       padding: sp[3],
     },
-    mainView: {
-      flexDirection: "column",
-      gap: sp[2],
-    },
     iconView: {
       borderRadius: r.full,
       backgroundColor: t.primary,
@@ -120,27 +129,10 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       alignItems: "center",
       justifyContent: "center",
     },
-    highlightText: {
-      fontWeight: fw.bold,
-      color: t.text,
-      fontSize: fs.base,
-    },
-    text: { color: t.text },
-    textContainer: {
-      flex: 1,
-      justifyContent: "center",
-      marginLeft: sp[2],
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
     progressSection: {
       marginTop: sp[1],
     },
     bodyHead: {
-      flexDirection: "row",
-      justifyContent: "space-between",
       marginBottom: sp[1],
     },
     startProgressColor: {
@@ -161,9 +153,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     footer: {
       marginTop: sp[1],
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
       borderTopWidth: 1,
       borderTopColor: t.border,
       paddingTop: sp[2],

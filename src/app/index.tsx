@@ -1,12 +1,10 @@
-import { Roles } from "@/constants/roles";
-import { Redirect } from "expo-router";
-
-const CURRENT_ROLE: Roles = "user";
+import { UserContextProvider } from "@/context/UserContext";
+import WelcomePage from "@/features/user/pages/WelcomePage";
 
 export default function Index() {
-  if (CURRENT_ROLE === "seller") {
-    return <Redirect href="/(seller)/dashboard-seller" />;
-  }
-
-  return <Redirect href="/(tabs)/dashboard" />;
+  return (
+    <UserContextProvider>
+      <WelcomePage />
+    </UserContextProvider>
+  );
 }

@@ -1,9 +1,9 @@
-import Card from "@/components/Card";
-import { Label, SubTitle } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
-import { Creditor } from "@/types";
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
+import Card from "@/components/Card";
+import { HStack, Text, VStack } from "@/components/layout";
+import { makeStyles } from "@/hooks/useTheme";
+import type { Creditor } from "@/types";
 
 interface CreditorCardProps {
   creditor: Creditor;
@@ -24,7 +24,7 @@ export default function CreditorCard({
 
   return (
     <Card style={styles.card}>
-      <View style={styles.container}>
+      <HStack align="center">
         <View style={styles.avatar}>
           <MaterialIcons
             name="corporate-fare"
@@ -33,16 +33,22 @@ export default function CreditorCard({
           />
         </View>
 
-        <View style={styles.content}>
-          <Label style={styles.name}>{creditor.name}</Label>
+        <VStack flex={1} justify="center">
+          <Text size="md" weight="semibold" color="text">
+            {creditor.name}
+          </Text>
           {creditor.phoneNumber ? (
-            <SubTitle style={styles.phone}>{creditor.phoneNumber}</SubTitle>
+            <Text size="sm" color="textMuted" mt="1">
+              {creditor.phoneNumber}
+            </Text>
           ) : (
-            <SubTitle style={styles.noPhone}>Sin teléfono registrado</SubTitle>
+            <Text size="sm" color="textMuted" mt="1" style={styles.noPhone}>
+              Sin teléfono registrado
+            </Text>
           )}
-        </View>
+        </VStack>
 
-        <View style={styles.actions}>
+        <HStack align="center" gap="2">
           {creditor.phoneNumber && (
             <Pressable onPress={handleCall} style={styles.actionButton}>
               <MaterialIcons
@@ -64,8 +70,8 @@ export default function CreditorCard({
               />
             </Pressable>
           )}
-        </View>
-      </View>
+        </HStack>
+      </HStack>
     </Card>
   );
 }
@@ -77,10 +83,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       marginVertical: sp[1],
       marginHorizontal: sp[3],
       padding: sp[3],
-    },
-    container: {
-      flexDirection: "row",
-      alignItems: "center",
     },
     avatar: {
       width: 48,
@@ -94,30 +96,8 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     iconColor: {
       color: t.primary,
     },
-    content: {
-      flex: 1,
-      justifyContent: "center",
-    },
-    name: {
-      fontWeight: fw.semibold,
-      fontSize: fs.md,
-      color: t.text,
-    },
-    phone: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-      marginTop: sp[1],
-    },
     noPhone: {
-      fontSize: fs.sm,
-      color: t.textMuted,
       fontStyle: "italic",
-      marginTop: sp[1],
-    },
-    actions: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: sp[2],
     },
     actionButton: {
       width: 36,

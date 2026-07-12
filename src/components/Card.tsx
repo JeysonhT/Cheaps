@@ -1,4 +1,4 @@
-import { StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View, type ViewProps } from "react-native";
 import { makeStyles } from "../hooks/useTheme";
 
 const cardStyles = makeStyles((t, sp, fs, fw, r) =>

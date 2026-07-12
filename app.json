@@ -4,7 +4,7 @@
     "slug": "Cheaps",
     "version": "0.1.2",
     "orientation": "portrait",
-    "icon": "./src/assets/images/icon.png",
+    "icon": "./src/assets/images/cheaps_icon.png",
     "scheme": "cheaps",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -12,7 +12,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFFFFF",
         "foregroundImage": "./src/assets/images/android-icon-foreground.png",
         "backgroundImage": "./src/assets/images/android-icon-background.png",
         "monochromeImage": "./src/assets/images/android-icon-monochrome.png"
@@ -61,7 +61,57 @@
         }
       ],
       "expo-status-bar",
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./src/assets/fonts/Inter_28pt-Regular.ttf",
+            "./src/assets/fonts/Outfit-Regular.ttf"
+          ],
+          "android": {
+            "fonts": [
+              {
+                "fontFamily": "Inter",
+                "fontDefinitions": [
+                  {
+                    "path": "./src/assets/fonts/Inter_28pt-Regular.ttf",
+                    "weight": 400
+                  }
+                ]
+              },
+              {
+                "fontFamily": "Outfit",
+                "fontDefinitions": [
+                  {
+                    "path": "./src/assets/fonts/Outfit-Regular.ttf",
+                    "weight": 400
+                  }
+                ]
+              }
+            ]
+          },
+          "ios": {
+            "fonts": [
+              "./src/assets/fonts/Inter_28pt-Regular.ttf",
+              "./src/assets/fonts/Outfit-Regular.ttf"
+            ]
+          }
+        }
+      ],
+      [
+        "expo-asset",
+        {
+          "assets": [
+            "./src/assets/images/guide_1.png",
+            "./src/assets/images/guide_2.png",
+            "./src/assets/images/guide_3.png",
+            "./src/assets/images/guide_4.png",
+            "./src/assets/images/guide_5.png",
+            "./src/assets/images/guide_6.png",
+            "./src/assets/images/logotipo_cheaps.png"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

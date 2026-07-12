@@ -92,6 +92,12 @@ export const themes = {
     success: palette.success,
     warning: palette.warning,
 
+    // botones
+    buttonPrimary: palette.primary700,
+    buttonSecondary: palette.secondary300,
+    buttonInverted: palette.neutral700,
+    buttonOutlined: palette.neutral200,
+
     // Tabs
     tabIconDefault: palette.neutral400,
     tabIconSelected: palette.primary500,
@@ -139,6 +145,7 @@ export const themes = {
 } as const;
 
 export type Theme = typeof themes.light;
+export type ThemeColorKey = keyof Theme;
 
 // ─── Espaciado (escala de 4pt) ────────────────────────────────────────────────
 export const spacing = {
@@ -170,6 +177,8 @@ export const fontSize = {
   "4xl": 40,
 } as const;
 
+export type FontSizeKey = keyof typeof fontSize;
+
 export const fontWeight = {
   regular: "400",
   medium: "500",
@@ -177,11 +186,15 @@ export const fontWeight = {
   bold: "700",
 } as const;
 
+export type FontWeightKey = keyof typeof fontWeight;
+
 export const lineHeight = {
   tight: 1.2,
   normal: 1.5,
   loose: 1.8,
 } as const;
+
+export type LineHeightKey = keyof typeof lineHeight;
 
 // ─── Bordes ───────────────────────────────────────────────────────────────────
 export const radius = {

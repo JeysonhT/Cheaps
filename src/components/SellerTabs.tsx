@@ -1,6 +1,6 @@
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Tabs } from "expo-router";
-import { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import type { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
 
 type ClientTabsProps = {
   options: BottomTabNavigationOptions;

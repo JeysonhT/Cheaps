@@ -1,4 +1,4 @@
-import { View as DefaultView, StyleSheet, ViewProps } from "react-native";
+import { View as DefaultView, StyleSheet, type ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { makeStyles } from "../hooks/useTheme";
 

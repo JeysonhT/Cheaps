@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { creditorService } from "../features/seller/services/creditorService";
-import { CreateCreditorDTO, Creditor } from "../types";
+import type { CreateCreditorDTO, Creditor } from "../types";
 
 interface CreditorState {
   creditors: Creditor[];

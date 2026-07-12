@@ -1,10 +1,9 @@
+import MaterialIcons from "@react-native-vector-icons/material-icons";
 import React, { useEffect } from "react";
-import { DashboardInfo, Label, SubTitle } from "@/components/StyledText";
-import Colors from "@/constants/Colors";
+import { StyleSheet } from "react-native";
+import { HStack, Text, VStack } from "@/components/layout";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import { makeStyles } from "@/hooks/useTheme";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
-import { StyleSheet, View } from "react-native";
 import NextPay from "./NextPay";
 
 export default function DebtsOverview() {
@@ -13,12 +12,13 @@ export default function DebtsOverview() {
 
   useEffect(() => {
     fetchDebts();
-  }, []);
+  }, [fetchDebts]);
 
   const totalPending = debts.reduce((sum, d) => sum + d.currentAmount, 0);
 
   // Calcular tendencia porcentual respecto al máximo del mes pasado
-  const diffPct = maxDebtMonth > 0 ? ((totalPending - maxDebtMonth) / maxDebtMonth) * 100 : 0;
+  const diffPct =
+    maxDebtMonth > 0 ? ((totalPending - maxDebtMonth) / maxDebtMonth) * 100 : 0;
   const isDown = diffPct <= 0;
 
   const formatCurrency = (val: number) => {
@@ -28,65 +28,67 @@ export default function DebtsOverview() {
   const fechaActual = new Date();
 
   // Encontrar la deuda más cercana a hoy comparando timestamps en ms (.getTime())
-  const nearDate = debts.length > 0 ? debts.reduce((a, b) => {
-    const sigFecha = new Date(b.debtDate);
-    const aFecha = new Date(a.debtDate);
-    
-    const difB = Math.abs(fechaActual.getTime() - sigFecha.getTime());
-    const difA = Math.abs(fechaActual.getTime() - aFecha.getTime());
+  const nearDate =
+    debts.length > 0
+      ? debts.reduce((a, b) => {
+          const sigFecha = new Date(b.debtDate);
+          const aFecha = new Date(a.debtDate);
 
-    return difB < difA ? b : a;
-  }) : null;
+          const difB = Math.abs(fechaActual.getTime() - sigFecha.getTime());
+          const difA = Math.abs(fechaActual.getTime() - aFecha.getTime());
+
+          return difB < difA ? b : a;
+        })
+      : null;
 
   const nextPay = nearDate ? debts.find((v) => v.id === nearDate.id) : null;
 
   return (
-    <View style={styles.container}>
-      <SubTitle style={[styles.text, styles.textMayus]}>
+    <VStack style={styles.container}>
+      <Text size="xs" weight="semibold" style={styles.textMayus}>
         Deuda total pendiente
-      </SubTitle>
-      <DashboardInfo style={styles.info}>
+      </Text>
+      <Text size="3xl" weight="bold" style={styles.info}>
         {formatCurrency(totalPending)}
-      </DashboardInfo>
-      
+      </Text>
+
       {isDown ? (
-        <View style={styles.debtTrend}>
+        <HStack align="center" gap="2" style={styles.debtTrend}>
           <MaterialIcons
             name="trending-down"
             color="#34d399" // light green for positive downward trend of debt
             size={18}
           />
-          <Label style={styles.text}>
-            {maxDebtMonth > 0 
-              ? `${Math.abs(diffPct).toFixed(1)}% menos que el mes pasado` 
+          <Text size="xs" style={styles.text}>
+            {maxDebtMonth > 0
+              ? `${Math.abs(diffPct).toFixed(1)}% menos que el mes pasado`
               : "Al día con el mes pasado"}
-          </Label>
-        </View>
+          </Text>
+        </HStack>
       ) : (
-        <View style={styles.debtTrend}>
+        <HStack align="center" gap="2" style={styles.debtTrend}>
           <MaterialIcons
             name="trending-up"
             color="#ef4444" // red for upward debt trend
             size={18}
           />
-          <Label style={styles.text}>
+          <Text size="xs" style={styles.text}>
             {`${diffPct.toFixed(1)}% más que el mes pasado`}
-          </Label>
-        </View>
+          </Text>
+        </HStack>
       )}
-      
+
       <NextPay debt={nextPay || null} />
-    </View>
+    </VStack>
   );
 }
 
-const useStyles = makeStyles((t, sp, fs, tw, r) =>
+const useStyles = makeStyles((t, sp, fs, fw, r) =>
   StyleSheet.create({
     container: {
       elevation: 1,
       margin: sp[2],
       padding: sp[4],
-      flexDirection: "column",
       backgroundColor: t.primary,
       borderRadius: r.md,
     },
@@ -97,15 +99,11 @@ const useStyles = makeStyles((t, sp, fs, tw, r) =>
     textMayus: {
       textTransform: "uppercase",
       color: "#a7f3d0", // soft light green header text
-      opacity: 1,
     },
     info: {
       color: t.textInverse,
     },
     debtTrend: {
-      gap: sp[2],
-      flexDirection: "row",
-      alignItems: "center",
       marginTop: sp[1],
     },
   }),

@@ -1,6 +1,3 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import { useCreditors } from "@/features/seller/hooks/useCreditors";
-import { makeStyles } from "@/hooks/useTheme";
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
@@ -12,6 +9,9 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { Text, VStack } from "@/components/layout";
+import { useCreditors } from "@/features/seller/hooks/useCreditors";
+import { makeStyles } from "@/hooks/useTheme";
 import CreditorCard from "./components/CreditorCard";
 
 export default function SellerDashboard() {
@@ -22,7 +22,7 @@ export default function SellerDashboard() {
 
   useEffect(() => {
     fetchCreditors();
-  }, []);
+  }, [fetchCreditors]);
 
   const handleDelete = (id: number) => {
     Alert.alert(
@@ -42,16 +42,18 @@ export default function SellerDashboard() {
   };
 
   const renderHeader = () => (
-    <View style={styles.header}>
-      <Title style={styles.headerTitle}>Mis Acreedores</Title>
-      <SubTitle style={styles.headerSubtitle}>
+    <VStack style={styles.header}>
+      <Text size="2xl" weight="bold" color="primary">
+        Mis Acreedores
+      </Text>
+      <Text size="base" color="textMuted" mt="1">
         Lista y gestiona las entidades a las que les debes
-      </SubTitle>
-    </View>
+      </Text>
+    </VStack>
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
+    <VStack align="center" justify="center" style={styles.emptyContainer}>
       <View style={styles.emptyIconContainer}>
         <MaterialIcons
           name="account-balance"
@@ -59,20 +61,27 @@ export default function SellerDashboard() {
           color={styles.emptyIconColor.color}
         />
       </View>
-      <Label style={styles.emptyTitle}>No hay acreedores registrados</Label>
-      <SubTitle style={styles.emptyText}>
+      <Text size="lg" weight="bold" color="text" align="center" mb="2">
+        No hay acreedores registrados
+      </Text>
+      <Text
+        size="base"
+        color="textMuted"
+        align="center"
+        style={styles.emptyText}
+      >
         Comienza agregando tu primer acreedor para llevar el control de tus
         deudas.
-      </SubTitle>
-    </View>
+      </Text>
+    </VStack>
   );
 
   return (
     <View style={styles.container}>
       {isLoading && creditors.length === 0 ? (
-        <View style={styles.loadingContainer}>
+        <VStack flex={1} justify="center" align="center">
           <ActivityIndicator size="large" color={styles.loaderColor.color} />
-        </View>
+        </VStack>
       ) : (
         <FlatList
           data={creditors}
@@ -91,10 +100,12 @@ export default function SellerDashboard() {
       {/* FAB Largo */}
       <Pressable
         style={styles.fab}
-        onPress={() => router.push("/(tabs)/dashboard/add")}
+        onPress={() => router.push("/(tabs)/debts/addCreditor")}
       >
         <MaterialIcons name="add" size={24} color="#ffffff" />
-        <Label style={styles.fabText}>Agregar Acreedor</Label>
+        <Text size="base" weight="bold" style={styles.fabText}>
+          Agregar Acreedor
+        </Text>
       </Pressable>
     </View>
   );
@@ -111,30 +122,13 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       paddingTop: sp[4],
       paddingBottom: sp[2],
     },
-    headerTitle: {
-      fontSize: fs["2xl"],
-      fontWeight: fw.bold,
-      color: t.primary,
-    },
-    headerSubtitle: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      marginTop: sp[1],
-    },
     listContent: {
       paddingBottom: 100, // Espacio para el FAB
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
     },
     loaderColor: {
       color: t.primary,
     },
     emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
       paddingHorizontal: sp[8],
       marginTop: 80,
     },
@@ -150,17 +144,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     emptyIconColor: {
       color: t.textMuted,
     },
-    emptyTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      textAlign: "center",
-      marginBottom: sp[2],
-    },
     emptyText: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      textAlign: "center",
       lineHeight: 22,
     },
     fab: {
@@ -182,8 +166,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     fabText: {
       color: "#ffffff",
-      fontWeight: fw.bold,
-      fontSize: fs.base,
     },
   }),
 );

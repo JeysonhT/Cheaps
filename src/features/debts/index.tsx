@@ -1,18 +1,19 @@
-import React, { useEffect } from "react";
+import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import {
-  View,
-  FlatList,
-  StyleSheet,
-  Pressable,
   ActivityIndicator,
   Alert,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { Label, Title, SubTitle } from "@/components/StyledText";
+import Button from "@/components/Button/Button";
+import { HStack, Text, VStack } from "@/components/layout";
 import { makeStyles } from "@/hooks/useTheme";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
-import { useDebts } from "./hooks/useDebts";
 import DebtCard from "./components/DebtCard";
+import { useDebts } from "./hooks/useDebts";
 
 export default function DebtsDashboard() {
   const styles = useStyles();
@@ -21,7 +22,7 @@ export default function DebtsDashboard() {
 
   useEffect(() => {
     fetchDebts();
-  }, []);
+  }, [fetchDebts]);
 
   const handleDelete = (id: number) => {
     Alert.alert(
@@ -36,7 +37,7 @@ export default function DebtsDashboard() {
             await deleteDebt(id);
           },
         },
-      ]
+      ],
     );
   };
 
@@ -44,55 +45,91 @@ export default function DebtsDashboard() {
   const totalPending = debts.reduce((sum, d) => sum + d.currentAmount, 0);
   const totalOriginal = debts.reduce((sum, d) => sum + d.amount, 0);
   const totalPaid = Math.max(0, totalOriginal - totalPending);
-  const averageProgress = totalOriginal > 0 ? (totalPaid / totalOriginal) * 100 : 0;
+  const averageProgress =
+    totalOriginal > 0 ? (totalPaid / totalOriginal) * 100 : 0;
 
   const formatCurrency = (val: number) => {
     return `C$ ${val.toLocaleString("es-NI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
-  const renderHeader = () => (
-    <View style={styles.header}>
-      {/* Resumen Card */}
-      <View style={styles.summaryCard}>
-        <SubTitle style={styles.summaryLabel}>Deuda total pendiente</SubTitle>
-        <Title style={styles.summaryAmount}>{formatCurrency(totalPending)}</Title>
-        
-        {totalOriginal > 0 && (
-          <View style={styles.progressContainer}>
-            <View style={styles.progressTextRow}>
-              <Label style={styles.progressText}>
-                Liquidado: {formatCurrency(totalPaid)} ({Math.round(averageProgress)}%)
-              </Label>
-            </View>
-            <View style={styles.progressTrack}>
-              <View style={[styles.progressFill, { width: `${averageProgress}%` }]} />
-            </View>
-          </View>
-        )}
-      </View>
+  const handleClickCreditors = () => {
+    router.navigate({ pathname: "/(tabs)/debts/sellers" });
+  };
 
-      <Title style={styles.sectionTitle}>Desglose de Deudas</Title>
-    </View>
+  const renderHeader = () => (
+    <VStack style={styles.header}>
+      {/* Resumen Card */}
+      <VStack style={styles.summaryCard}>
+        <Text size="xs" weight="semibold" style={styles.summaryLabel}>
+          Deuda total pendiente
+        </Text>
+        <Text size="3xl" weight="bold" mt="1" style={styles.summaryAmount}>
+          {formatCurrency(totalPending)}
+        </Text>
+
+        {totalOriginal > 0 && (
+          <VStack style={styles.progressContainer}>
+            <HStack justify="space-between" style={styles.progressTextRow}>
+              <Text size="xs" weight="medium" style={styles.progressText}>
+                Liquidado: {formatCurrency(totalPaid)} (
+                {Math.round(averageProgress)}%)
+              </Text>
+            </HStack>
+            <View style={styles.progressTrack}>
+              <View
+                style={[styles.progressFill, { width: `${averageProgress}%` }]}
+              />
+            </View>
+          </VStack>
+        )}
+      </VStack>
+
+      <Text size="lg" weight="bold" color="text" mx="4" mt="2">
+        Desglose de Deudas
+      </Text>
+      {/**
+       * Esta sección permite ver a los acreedores
+       */}
+      <HStack justify="flex-end" p="2">
+        <Button
+          label="Acreedores"
+          icon="person"
+          onPress={handleClickCreditors}
+        />
+      </HStack>
+    </VStack>
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
+    <VStack align="center" justify="center" style={styles.emptyContainer}>
       <View style={styles.emptyIconContainer}>
-        <MaterialIcons name="add-card" size={48} color={styles.emptyIconColor.color} />
+        <MaterialIcons
+          name="add-card"
+          size={48}
+          color={styles.emptyIconColor.color}
+        />
       </View>
-      <Label style={styles.emptyTitle}>Sin deudas registradas</Label>
-      <SubTitle style={styles.emptyText}>
-        Añade tus compromisos financieros para realizar un seguimiento óptimo de tus finanzas.
-      </SubTitle>
-    </View>
+      <Text size="lg" weight="bold" color="text" align="center" mb="2">
+        Sin deudas registradas
+      </Text>
+      <Text
+        size="base"
+        color="textMuted"
+        align="center"
+        style={styles.emptyText}
+      >
+        Añade tus compromisos financieros para realizar un seguimiento óptimo de
+        tus finanzas.
+      </Text>
+    </VStack>
   );
 
   return (
     <View style={styles.container}>
       {isLoading && debts.length === 0 ? (
-        <View style={styles.loadingContainer}>
+        <VStack flex={1} justify="center" align="center">
           <ActivityIndicator size="large" color={styles.loaderColor.color} />
-        </View>
+        </VStack>
       ) : (
         <FlatList
           data={debts}
@@ -114,7 +151,9 @@ export default function DebtsDashboard() {
         onPress={() => router.push("/(tabs)/debts/add")}
       >
         <MaterialIcons name="add" size={24} color="#ffffff" />
-        <Label style={styles.fabText}>Agregar Deuda</Label>
+        <Text size="base" weight="bold" style={styles.fabText}>
+          Agregar Deuda
+        </Text>
       </Pressable>
     </View>
   );
@@ -145,15 +184,10 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     summaryLabel: {
       color: "#a7f3d0", // Light green tint text
       textTransform: "uppercase",
-      fontWeight: fw.semibold,
-      fontSize: fs.xs,
       letterSpacing: 0.5,
     },
     summaryAmount: {
       color: "#ffffff",
-      fontSize: fs["3xl"],
-      fontWeight: fw.bold,
-      marginTop: sp[1],
     },
     progressContainer: {
       marginTop: sp[3],
@@ -162,14 +196,10 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       paddingTop: sp[3],
     },
     progressTextRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
       marginBottom: sp[1],
     },
     progressText: {
       color: "#ffffff",
-      fontSize: fs.xs,
-      fontWeight: fw.medium,
     },
     progressTrack: {
       height: 6,
@@ -183,27 +213,13 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       backgroundColor: "#34d399", // Emerald color for progress
       borderRadius: r.full,
     },
-    sectionTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      marginHorizontal: sp[4],
-      marginTop: sp[2],
-    },
     listContent: {
       paddingBottom: 100, // Espacio para el FAB
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
     },
     loaderColor: {
       color: t.primary,
     },
     emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
       paddingHorizontal: sp[8],
       marginTop: 80,
     },
@@ -221,17 +237,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     emptyIconColor: {
       color: t.textMuted,
     },
-    emptyTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      textAlign: "center",
-      marginBottom: sp[2],
-    },
     emptyText: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      textAlign: "center",
       lineHeight: 22,
     },
     fab: {
@@ -253,8 +259,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     fabText: {
       color: "#ffffff",
-      fontWeight: fw.bold,
-      fontSize: fs.base,
     },
-  })
+  }),
 );

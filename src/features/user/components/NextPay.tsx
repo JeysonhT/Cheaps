@@ -1,11 +1,10 @@
-import React from "react";
-import Card from "@/components/Card";
-import { Label } from "@/components/StyledText";
-import Colors from "@/constants/Colors";
-import { makeStyles } from "@/hooks/useTheme";
 import MaterialIcons from "@react-native-vector-icons/material-icons";
-import { StyleSheet, View } from "react-native";
-import { DebtWithCreditor } from "@/types";
+import React from "react";
+import { StyleSheet } from "react-native";
+import Card from "@/components/Card";
+import { HStack, Text } from "@/components/layout";
+import { makeStyles } from "@/hooks/useTheme";
+import type { DebtWithCreditor } from "@/types";
 
 interface NextPayProps {
   debt: DebtWithCreditor | null;
@@ -17,21 +16,30 @@ export default function NextPay({ debt }: NextPayProps) {
   if (!debt) {
     return (
       <Card style={styles.card}>
-        <View style={styles.top}>
+        <HStack align="center" gap="2" style={styles.top}>
           <MaterialIcons name="event" color="#ffffff" size={24} />
-          <Label style={styles.label}>Próximo Pago</Label>
-        </View>
-        <View style={styles.bottom}>
-          <Label style={styles.amount}>Sin deudas</Label>
-          <Label style={styles.date}>Al día</Label>
-        </View>
+          <Text size="sm" weight="medium" style={styles.textInverse}>
+            Próximo Pago
+          </Text>
+        </HStack>
+        <HStack justify="space-between" align="center">
+          <Text size="lg" weight="bold" style={styles.textInverse}>
+            Sin deudas
+          </Text>
+          <Text size="sm" weight="medium" style={styles.textInverse}>
+            Al día
+          </Text>
+        </HStack>
       </Card>
     );
   }
 
   // Estimar cuota aproximada
   const installment = debt.amount * (debt.payFrecuency / 365);
-  const displayInstallment = Math.min(debt.currentAmount, installment > 0 ? installment : debt.currentAmount);
+  const displayInstallment = Math.min(
+    debt.currentAmount,
+    installment > 0 ? installment : debt.currentAmount,
+  );
 
   // Calcular próxima fecha de pago
   const getNextPayDate = () => {
@@ -42,8 +50,21 @@ export default function NextPay({ debt }: NextPayProps) {
       while (baseDate < today) {
         baseDate.setDate(baseDate.getDate() + debt.payFrecuency);
       }
-      
-      const months = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+
+      const months = [
+        "Ene",
+        "Feb",
+        "Mar",
+        "Abr",
+        "May",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dic",
+      ];
       return `${baseDate.getDate()} de ${months[baseDate.getMonth()]}, ${baseDate.getFullYear()}`;
     } catch (e) {
       return debt.debtDate;
@@ -56,14 +77,20 @@ export default function NextPay({ debt }: NextPayProps) {
 
   return (
     <Card style={styles.card}>
-      <View style={styles.top}>
+      <HStack align="center" gap="2" style={styles.top}>
         <MaterialIcons name="event" color="#ffffff" size={24} />
-        <Label style={styles.label}>Próximo Pago: {debt.name}</Label>
-      </View>
-      <View style={styles.bottom}>
-        <Label style={styles.amount}>{formatCurrency(displayInstallment)}</Label>
-        <Label style={styles.date}>{getNextPayDate()}</Label>
-      </View>
+        <Text size="sm" weight="medium" style={styles.textInverse}>
+          Próximo Pago: {debt.name}
+        </Text>
+      </HStack>
+      <HStack justify="space-between" align="center">
+        <Text size="lg" weight="bold" style={styles.textInverse}>
+          {formatCurrency(displayInstallment)}
+        </Text>
+        <Text size="sm" weight="medium" style={styles.textInverse}>
+          {getNextPayDate()}
+        </Text>
+      </HStack>
     </Card>
   );
 }
@@ -75,18 +102,10 @@ const useStyles = makeStyles((t, sp, fs, fw) =>
       marginTop: sp[2],
     },
     top: {
-      flexDirection: "row",
-      gap: sp[2],
       marginBottom: sp[1],
-      alignItems: "center",
     },
-    bottom: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
+    textInverse: {
+      color: t.textInverse,
     },
-    label: { color: t.textInverse, fontSize: fs.sm, fontWeight: fw.medium },
-    amount: { color: t.textInverse, fontSize: fs.lg, fontWeight: fw.bold },
-    date: { color: t.textInverse, fontWeight: fw.medium, fontSize: fs.sm },
   }),
 );

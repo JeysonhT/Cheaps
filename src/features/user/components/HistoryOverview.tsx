@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
-import Card from "@/components/Card";
-import { SubTitle, Title } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
 import { Link } from "expo-router";
+import { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import Card from "@/components/Card";
+import { Text, VStack } from "@/components/layout";
 import HistoryElement from "@/features/history/components/HistoryElement";
 import { useHistory } from "@/features/history/hooks/useHistory";
+import { makeStyles } from "@/hooks/useTheme";
 
 export default function HistoryOverview() {
   const styles = useStyles();
@@ -13,23 +13,31 @@ export default function HistoryOverview() {
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const displayedPayments = payments.slice(0, 3);
-  const showMore = payments.length > 3;
 
   return (
-    <View style={styles.mainView}>
-      <Title>Historial reciente</Title>
+    <VStack p="2" style={styles.mainView}>
+      <Text size="lg" weight="bold" color="text">
+        Historial reciente
+      </Text>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.slider}
       >
         <Card style={styles.card}>
           {payments.length === 0 ? (
-            <View style={styles.emptyView}>
-              <SubTitle style={styles.emptyText}>No hay abonos registrados recientemente</SubTitle>
-            </View>
+            <VStack align="center" justify="center" p="4">
+              <Text
+                size="sm"
+                color="textMuted"
+                align="center"
+                style={{ fontStyle: "italic" }}
+              >
+                No hay abonos registrados recientemente
+              </Text>
+            </VStack>
           ) : (
             <View>
               {displayedPayments.map((payment, index) => (
@@ -46,19 +54,21 @@ export default function HistoryOverview() {
           {payments.length > 0 && (
             <Link href="/(tabs)/history" asChild>
               <Pressable style={styles.presableView}>
-                <SubTitle>Ver historial Completo</SubTitle>
+                <Text size="base" weight="medium" color="text">
+                  Ver historial Completo
+                </Text>
               </Pressable>
             </Link>
           )}
         </Card>
       </ScrollView>
-    </View>
+    </VStack>
   );
 }
 
 const useStyles = makeStyles((t, sp, fs, fw, r) =>
   StyleSheet.create({
-    mainView: { padding: sp[2], flexShrink: 1 },
+    mainView: { flexShrink: 1 },
     card: {
       padding: sp[0],
       backgroundColor: t.bgSubtle,
@@ -76,14 +86,5 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       justifyContent: "center",
     },
     slider: { paddingBottom: sp[2] },
-    emptyView: {
-      padding: sp[4],
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    emptyText: {
-      fontStyle: "italic",
-      textAlign: "center",
-    },
   }),
 );

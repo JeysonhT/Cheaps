@@ -3,7 +3,7 @@ import * as SQLite from "expo-sqlite";
 const DB_NAME = "cheaps.db";
 
 export async function migrateDbIfNeeded(db: SQLite.SQLiteDatabase) {
-  const DATABASE_VERSION = 3;
+  const DATABASE_VERSION = 4;
 
   const result = await db.getFirstAsync<{
     user_version: number;
@@ -103,6 +103,22 @@ export async function migrateDbIfNeeded(db: SQLite.SQLiteDatabase) {
     `);
 
     user_version = 3;
+  }
+
+  if (user_version === 3) {
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS app(
+      id INTEGER PRIMARY KEY NOT NULL,
+      welcomePassed boolean NOT NULL UNIQUE
+      )`);
+
+    await db.runAsync(
+      `INSERT OR IGNORE INTO app (id, welcomePassed) VALUES (?,?)`,
+      1,
+      false,
+    );
+
+    user_version = 4;
   }
 
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);

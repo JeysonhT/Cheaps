@@ -4,17 +4,11 @@ import {
   radius,
   shadows,
   spacing,
-  themes,
   type Theme,
+  themes,
 } from "@/constants/tokens";
 
-/**
- * Hook principal de theming.
- *
- * Uso:
- *   const { t, sp, fs, r } = useTheme();
- *   <View style={{ backgroundColor: t.bg, padding: sp[4] }} />
- */
+// hook para obtener el tema y medidas necesarias
 export function useTheme() {
   // no hay tema oscuro por el momento
   // const scheme = useColorScheme() ?? "light";
@@ -40,20 +34,6 @@ export function useTheme() {
   };
 }
 
-// ─── Helper: StyleSheet con tokens ───────────────────────────────────────────
-/**
- * Crea un StyleSheet tipado a partir de los tokens actuales.
- * Úsalo cuando quieras estilos estáticos fuera de un componente.
- *
- * Ejemplo:
- *   const useStyles = makeStyles((t, sp) => ({
- *     card: { backgroundColor: t.bgElevated, padding: sp[4] }
- *   }));
- *
- *   function MyComponent() {
- *     const styles = useStyles();
- *   }
- */
 export function makeStyles<T extends Record<string, object>>(
   factory: (
     t: Theme,

@@ -1,8 +1,8 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useEffect } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { Text, VStack } from "@/components/layout";
+import { makeStyles } from "@/hooks/useTheme";
 import HistoryElement from "./components/HistoryElement";
 import { useHistory } from "./hooks/useHistory";
 
@@ -12,7 +12,7 @@ export default function HistoryDashboard() {
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const totalPayments = payments.reduce((sum, p) => sum + p.amount, 0);
 
@@ -21,46 +21,55 @@ export default function HistoryDashboard() {
   };
 
   const renderHeader = () => (
-    <View style={styles.header}>
+    <VStack style={styles.header}>
       {/* Resumen Card */}
-      <View style={styles.summaryCard}>
-        <SubTitle style={styles.summaryLabel}>
+      <VStack style={styles.summaryCard}>
+        <Text size="xs" weight="semibold" style={styles.summaryLabel}>
           Total Abonado al Historial
-        </SubTitle>
-        <Title style={styles.summaryAmount}>
+        </Text>
+        <Text size="2xl" weight="bold" mt="1" style={styles.summaryAmount}>
           {formatCurrency(totalPayments)}
-        </Title>
-        <SubTitle style={styles.summarySubtext}>
+        </Text>
+        <Text size="xs" mt="2" style={styles.summarySubtext}>
           {`Has registrado un total de ${payments.length} abonos.`}
-        </SubTitle>
-      </View>
-      <Title style={styles.sectionTitle}>Historial de Transacciones</Title>
-    </View>
+        </Text>
+      </VStack>
+      <Text size="lg" weight="bold" color="text" mx="4" mt="2">
+        Historial de Transacciones
+      </Text>
+    </VStack>
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
+    <VStack align="center" justify="center" style={styles.emptyContainer}>
       <View style={styles.emptyIconContainer}>
         <MaterialIcons
           name="receipt-long"
-          size={48}
+          size={24}
           color={styles.emptyIconColor.color}
         />
       </View>
-      <Label style={styles.emptyTitle}>No hay transacciones registradas</Label>
-      <SubTitle style={styles.emptyText}>
+      <Text size="lg" weight="bold" color="text" align="center" mb="2">
+        No hay transacciones registradas
+      </Text>
+      <Text
+        size="base"
+        color="textMuted"
+        align="center"
+        style={styles.emptyText}
+      >
         Tus abonos registrados a deudas aparecerán listados aquí para llevar un
         control estricto.
-      </SubTitle>
-    </View>
+      </Text>
+    </VStack>
   );
 
   return (
     <View style={styles.container}>
       {isLoading && payments.length === 0 ? (
-        <View style={styles.loadingContainer}>
+        <VStack flex={1} justify="center" align="center">
           <ActivityIndicator size="large" color={styles.loaderColor.color} />
-        </View>
+        </VStack>
       ) : (
         <FlatList
           data={payments}
@@ -68,7 +77,6 @@ export default function HistoryDashboard() {
           renderItem={({ item }) => (
             <View style={styles.elementWrapper}>
               <HistoryElement payment={item} />
-              <View style={styles.separator} />
             </View>
           )}
           ListHeaderComponent={renderHeader}
@@ -107,28 +115,14 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     summaryLabel: {
       color: "#85f8c4", // Light green tint
       textTransform: "uppercase",
-      fontWeight: fw.semibold,
-      fontSize: fs.xs,
       letterSpacing: 0.5,
     },
     summaryAmount: {
       color: "#ffffff",
-      fontSize: fs["2xl"],
-      fontWeight: fw.bold,
-      marginTop: sp[1],
     },
     summarySubtext: {
       color: "rgba(255, 255, 255, 0.8)",
-      fontSize: fs.xs,
-      marginTop: sp[2],
       fontStyle: "italic",
-    },
-    sectionTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      marginHorizontal: sp[4],
-      marginTop: sp[2],
     },
     listContent: {
       paddingBottom: sp[6],
@@ -142,26 +136,16 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       borderColor: t.border,
       marginVertical: sp[1],
     },
-    separator: {
-      height: 0,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
     loaderColor: {
       color: t.primary,
     },
     emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: sp[8],
       marginTop: 80,
     },
     emptyIconContainer: {
       width: 80,
       height: 80,
+      paddingHorizontal: 6,
       borderRadius: r.full,
       backgroundColor: t.bgElevated,
       alignItems: "center",
@@ -173,17 +157,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     emptyIconColor: {
       color: t.textMuted,
     },
-    emptyTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      textAlign: "center",
-      marginBottom: sp[2],
-    },
     emptyText: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      textAlign: "center",
       lineHeight: 22,
     },
   }),

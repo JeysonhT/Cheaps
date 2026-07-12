@@ -1,7 +1,3 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import Main from "@/components/StyledView";
-import { useCreditors } from "@/features/seller/hooks/useCreditors";
-import { makeStyles } from "@/hooks/useTheme";
 import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
@@ -15,6 +11,10 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { HStack, Text, VStack } from "@/components/layout";
+import Main from "@/components/StyledView";
+import { useCreditors } from "@/features/seller/hooks/useCreditors";
+import { makeStyles } from "@/hooks/useTheme";
 
 export default function AddCreditorScreen() {
   const styles = useStyles();
@@ -55,7 +55,7 @@ export default function AddCreditorScreen() {
         style={styles.keyboardContainer}
       >
         {/* Custom Header */}
-        <View style={styles.header}>
+        <HStack align="center" justify="space-between" style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.backButton}>
             <MaterialIcons
               name="arrow-back"
@@ -63,7 +63,9 @@ export default function AddCreditorScreen() {
               color={styles.iconColor.color}
             />
           </Pressable>
-          <Title style={styles.headerTitle}>Agregar Acreedor</Title>
+          <Text size="lg" weight="bold" color="primary">
+            Agregar Acreedor
+          </Text>
           <View style={styles.helpButton}>
             <MaterialIcons
               name="help-outline"
@@ -71,27 +73,38 @@ export default function AddCreditorScreen() {
               color={styles.iconMutedColor.color}
             />
           </View>
-        </View>
+        </HStack>
 
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
         >
           {/* Title Section */}
-          <View style={styles.introSection}>
-            <Title style={styles.introTitle}>Detalles del Acreedor</Title>
-            <SubTitle style={styles.introSubtitle}>
+          <VStack style={{ marginBottom: 24 }}>
+            <Text size="xl" weight="bold" color="primary" mb="1">
+              Detalles del Acreedor
+            </Text>
+            <Text size="base" color="textMuted" style={styles.introSubtitle}>
               Ingrese la información necesaria para registrar un nuevo acreedor
               en su sistema de gestión de deuda.
-            </SubTitle>
-          </View>
+            </Text>
+          </VStack>
 
           {/* Form Card */}
-          <View style={styles.formCard}>
+          <VStack style={styles.formCard}>
             {/* Field: Name */}
-            <View style={styles.inputGroup}>
-              <Label style={styles.inputLabel}>Nombre del Acreedor</Label>
-              <View
+            <VStack gap="1">
+              <Text
+                size="sm"
+                weight="semibold"
+                color="primary"
+                pl="1"
+                style={styles.inputLabel}
+              >
+                Nombre del Acreedor
+              </Text>
+              <HStack
+                align="center"
                 style={[
                   styles.inputWrapper,
                   isNameFocused && styles.inputWrapperFocused,
@@ -113,22 +126,31 @@ export default function AddCreditorScreen() {
                     setName(val);
                     if (errorMsg) setErrorMsg(null);
                   }}
-                  placeholder="Ej. Banco Nacional, Financiera Express..."
+                  placeholder="Ej. Banpro , Financiera Express..."
                   placeholderTextColor={styles.placeholderColor.color}
                   style={styles.textInput}
                   onFocus={() => setIsNameFocused(true)}
                   onBlur={() => setIsNameFocused(false)}
                 />
-              </View>
-              <SubTitle style={styles.inputHelper}>
+              </HStack>
+              <Text size="xs" color="textMuted" pl="1" mt="1">
                 Nombre legal o comercial de la entidad.
-              </SubTitle>
-            </View>
+              </Text>
+            </VStack>
 
             {/* Field: Phone */}
-            <View style={styles.inputGroup}>
-              <Label style={styles.inputLabel}>Número de Teléfono</Label>
-              <View
+            <VStack gap="1">
+              <Text
+                size="sm"
+                weight="semibold"
+                color="primary"
+                pl="1"
+                style={styles.inputLabel}
+              >
+                Número de Teléfono
+              </Text>
+              <HStack
+                align="center"
                 style={[
                   styles.inputWrapper,
                   isPhoneFocused && styles.inputWrapperFocused,
@@ -154,54 +176,63 @@ export default function AddCreditorScreen() {
                   onFocus={() => setIsPhoneFocused(true)}
                   onBlur={() => setIsPhoneFocused(false)}
                 />
-              </View>
-              <SubTitle style={styles.inputHelper}>
+              </HStack>
+              <Text size="xs" color="textMuted" pl="1" mt="1">
                 Opcional: Para contacto directo de aclaraciones.
-              </SubTitle>
-            </View>
+              </Text>
+            </VStack>
 
-            {errorMsg && <Label style={styles.errorText}>{errorMsg}</Label>}
+            {errorMsg && (
+              <Text size="sm" weight="semibold" color="error" px="1">
+                {errorMsg}
+              </Text>
+            )}
 
             {/* Informational Note */}
-            <View style={styles.infoNote}>
+            <HStack style={styles.infoNote}>
               <MaterialIcons
                 name="info-outline"
                 size={20}
                 color={styles.infoIconColor.color}
                 style={styles.infoIcon}
               />
-              <SubTitle style={styles.infoText}>
+              <Text
+                flex={1}
+                size="sm"
+                color="textMuted"
+                style={styles.infoText}
+              >
                 Al guardar este acreedor, podrá comenzar a registrar
                 transacciones, pagos programados y estados de cuenta vinculados
                 a esta entidad.
-              </SubTitle>
-            </View>
-          </View>
+              </Text>
+            </HStack>
+          </VStack>
 
           {/* Decorative Illustration Banner */}
-          <View style={styles.bannerContainer}>
-            <View style={styles.bannerCard}>
+          <VStack style={{ marginBottom: 24 }}>
+            <VStack align="center" justify="center" style={styles.bannerCard}>
               <MaterialIcons
-                name="account-balance"
+                name="money"
                 size={36}
                 color={styles.bannerIconColor.color}
                 style={styles.bannerIcon}
               />
-              <Title style={styles.bannerTitle}>
-                Estabilidad Institucional
-              </Title>
-              <SubTitle style={styles.bannerSubtitle}>
+              <Text size="md" weight="bold" mb="1" style={styles.bannerTitle}>
+                Estabilidad Personal
+              </Text>
+              <Text size="sm" align="center" style={styles.bannerSubtitle}>
                 Mantenga un registro preciso de sus compromisos financieros.
-              </SubTitle>
-            </View>
-          </View>
+              </Text>
+            </VStack>
+          </VStack>
         </ScrollView>
 
         {/* Footer actions */}
-        <View style={styles.footer}>
-          <SubTitle style={styles.footerText}>
+        <HStack align="center" justify="space-between" style={styles.footer}>
+          <Text flex={1} size="xs" color="textMuted" mr="2">
             Todos los datos se cifran localmente.
-          </SubTitle>
+          </Text>
           <Pressable
             style={({ pressed }) => [
               styles.submitButton,
@@ -215,12 +246,14 @@ export default function AddCreditorScreen() {
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
               <>
-                <Label style={styles.submitButtonText}>Guardar Acreedor</Label>
+                <Text size="base" weight="bold" style={styles.submitButtonText}>
+                  Guardar Acreedor
+                </Text>
                 <MaterialIcons name="save" size={20} color="#ffffff" />
               </>
             )}
           </Pressable>
-        </View>
+        </HStack>
       </KeyboardAvoidingView>
     </Main>
   );
@@ -240,9 +273,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     header: {
       height: 60,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
       paddingHorizontal: sp[3],
       backgroundColor: t.bgElevated,
       borderBottomWidth: 1,
@@ -251,11 +281,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     backButton: {
       padding: sp[2],
       borderRadius: r.full,
-    },
-    headerTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.primary,
     },
     helpButton: {
       padding: sp[2],
@@ -277,18 +302,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       padding: sp[4],
       paddingBottom: sp[8],
     },
-    introSection: {
-      marginBottom: sp[6],
-    },
-    introTitle: {
-      fontSize: fs.xl,
-      fontWeight: fw.bold,
-      color: t.primary,
-      marginBottom: sp[1],
-    },
     introSubtitle: {
-      fontSize: fs.base,
-      color: t.textMuted,
       lineHeight: 22,
     },
     formCard: {
@@ -299,20 +313,11 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       borderColor: t.border,
       gap: sp[4],
     },
-    inputGroup: {
-      gap: sp[1],
-    },
     inputLabel: {
-      fontSize: fs.sm,
-      fontWeight: fw.semibold,
-      color: t.primary,
       textTransform: "uppercase",
       letterSpacing: 0.5,
-      paddingLeft: sp[1],
     },
     inputWrapper: {
-      flexDirection: "row",
-      alignItems: "center",
       backgroundColor: t.bg,
       borderWidth: 1,
       borderColor: t.borderStrong,
@@ -333,20 +338,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       color: t.text,
       height: "100%",
     },
-    inputHelper: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-      paddingLeft: sp[1],
-      marginTop: sp[1],
-    },
-    errorText: {
-      color: t.error,
-      fontSize: fs.sm,
-      fontWeight: fw.semibold,
-      paddingHorizontal: sp[1],
-    },
     infoNote: {
-      flexDirection: "row",
       backgroundColor: t.bgSubtle,
       borderRadius: r.md,
       padding: sp[3],
@@ -360,21 +352,13 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       color: t.secondary,
     },
     infoText: {
-      flex: 1,
-      fontSize: fs.sm,
-      color: t.textMuted,
       fontStyle: "italic",
       lineHeight: 18,
-    },
-    bannerContainer: {
-      marginTop: sp[6],
     },
     bannerCard: {
       backgroundColor: "#064e3b",
       borderRadius: r.lg,
       padding: sp[4],
-      alignItems: "center",
-      justifyContent: "center",
     },
     bannerIcon: {
       marginBottom: sp[2],
@@ -383,15 +367,10 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       color: "#a7f3d0",
     },
     bannerTitle: {
-      fontSize: fs.md,
-      fontWeight: fw.bold,
       color: "#ffffff",
-      marginBottom: sp[1],
     },
     bannerSubtitle: {
-      fontSize: fs.sm,
       color: "#cbd5e1",
-      textAlign: "center",
       lineHeight: 18,
     },
     footer: {
@@ -399,15 +378,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       borderTopWidth: 1,
       borderTopColor: t.border,
       padding: sp[4],
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    footerText: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-      flex: 1,
-      marginRight: sp[2],
     },
     submitButton: {
       backgroundColor: t.primary,
@@ -433,8 +403,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     submitButtonText: {
       color: "#ffffff",
-      fontWeight: fw.bold,
-      fontSize: fs.base,
     },
   }),
 );

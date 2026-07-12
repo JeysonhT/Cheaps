@@ -1,12 +1,13 @@
-import React from "react";
-import { View, StyleSheet, Pressable } from "react-native";
-import { Label, SubTitle } from "@/components/StyledText";
-import Card from "@/components/Card";
-import { makeStyles } from "@/hooks/useTheme";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
-import { DebtWithCreditor, DebtType } from "@/types";
+import MaterialIcons, {
+  type MaterialIconsIconName,
+} from "@react-native-vector-icons/material-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, View } from "react-native";
+import Card from "@/components/Card";
+import { HStack, Text, VStack } from "@/components/layout";
+import { makeStyles } from "@/hooks/useTheme";
+import type { DebtType, DebtWithCreditor } from "@/types";
 
 interface DebtCardProps {
   debt: DebtWithCreditor;
@@ -48,41 +49,59 @@ export default function DebtCard({ debt, onDelete }: DebtCardProps) {
 
   return (
     <Card style={styles.card}>
-      <Pressable onPress={() => router.push(`/(tabs)/debts/${debt.id}` as any)}>
-        <View style={styles.mainView}>
+      <Pressable onPress={() => router.push(`/(tabs)/debts/${debt.id}`)}>
+        <VStack gap="3">
           {/* Header section with Icon and Details */}
-          <View style={styles.header}>
+          <HStack align="center">
             <View style={styles.iconView}>
               <MaterialIcons
-                name={getDebtIcon(debt.type) as any}
+                name={getDebtIcon(debt.type) as MaterialIconsIconName}
                 color={styles.avatarIconColor.color}
                 size={24}
               />
             </View>
-            <View style={styles.titleContainer}>
-              <Label style={styles.highlightText}>{debt.name}</Label>
-              <SubTitle style={styles.creditorText}>
-                {debt.creditor ? `Acreedor: ${debt.creditor.name}` : "Sin acreedor asignado"}
-              </SubTitle>
-            </View>
+            <VStack flex={1}>
+              <Text size="md" weight="bold" color="text">
+                {debt.name}
+              </Text>
+              <Text size="sm" color="textMuted" mt="1">
+                {debt.creditor
+                  ? `Acreedor: ${debt.creditor.name}`
+                  : "Sin acreedor asignado"}
+              </Text>
+            </VStack>
             {onDelete && (
               <Pressable
                 onPress={() => onDelete(debt.id)}
                 style={styles.deleteButton}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <MaterialIcons name="delete-outline" size={20} color={styles.deleteIconColor.color} />
+                <MaterialIcons
+                  name="delete-outline"
+                  size={20}
+                  color={styles.deleteIconColor.color}
+                />
               </Pressable>
             )}
-          </View>
+          </HStack>
 
           {/* Progress Bar Section */}
-          <View style={styles.progressContainer}>
-            <View style={styles.progressHeader}>
-              <SubTitle style={styles.progressLabel}>Progreso de liquidación</SubTitle>
-              <Label style={styles.progressPctText}>{`${displayPct}%`}</Label>
-            </View>
-            
+          <VStack style={styles.progressContainer}>
+            <HStack
+              justify="space-between"
+              align="center"
+              style={styles.progressHeader}
+            >
+              <Text size="xs" color="textMuted">
+                Progreso de liquidación
+              </Text>
+              <Text
+                size="xs"
+                weight="semibold"
+                color="primary"
+              >{`${displayPct}%`}</Text>
+            </HStack>
+
             <View style={styles.progressTrack}>
               <LinearGradient
                 colors={[
@@ -94,26 +113,34 @@ export default function DebtCard({ debt, onDelete }: DebtCardProps) {
                 style={[styles.progressFill, { width: `${displayPct}%` }]}
               />
             </View>
-          </View>
+          </VStack>
 
           {/* Footer with remaining amounts */}
-          <View style={styles.footer}>
-            <View>
-              <SubTitle style={styles.amountLabel}>Monto original</SubTitle>
-              <Label style={styles.originalAmountText}>{formatCurrency(original)}</Label>
-            </View>
-            <View style={styles.remainingAmountContainer}>
-              <SubTitle style={[styles.amountLabel, styles.alignRight]}>Saldo restante</SubTitle>
-              <Label style={styles.remainingAmountText}>{formatCurrency(current)}</Label>
-            </View>
-          </View>
-        </View>
+          <HStack justify="space-between" align="center" style={styles.footer}>
+            <VStack>
+              <Text size="xs" color="textMuted" mb="1">
+                Monto original
+              </Text>
+              <Text size="sm" weight="medium" color="text">
+                {formatCurrency(original)}
+              </Text>
+            </VStack>
+            <VStack align="flex-end">
+              <Text size="xs" color="textMuted" mb="1" align="right">
+                Saldo restante
+              </Text>
+              <Text size="base" weight="bold" color="primary">
+                {formatCurrency(current)}
+              </Text>
+            </VStack>
+          </HStack>
+        </VStack>
       </Pressable>
     </Card>
   );
 }
 
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
+const useStyles = makeStyles((t, sp, _fs, _fw, r) =>
   StyleSheet.create({
     card: {
       backgroundColor: t.bgElevated,
@@ -123,14 +150,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       borderWidth: 1,
       borderColor: t.border,
       borderRadius: r.lg,
-    },
-    mainView: {
-      flexDirection: "column",
-      gap: sp[3],
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
     },
     iconView: {
       borderRadius: r.full,
@@ -144,19 +163,6 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     avatarIconColor: {
       color: t.primary,
     },
-    titleContainer: {
-      flex: 1,
-    },
-    highlightText: { 
-      fontWeight: fw.bold,
-      fontSize: fs.md,
-      color: t.text,
-    },
-    creditorText: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-      marginTop: 2,
-    },
     deleteButton: {
       padding: sp[2],
       borderRadius: r.full,
@@ -169,19 +175,7 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
       marginTop: sp[1],
     },
     progressHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
       marginBottom: sp[1],
-    },
-    progressLabel: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-    },
-    progressPctText: {
-      fontSize: fs.xs,
-      fontWeight: fw.semibold,
-      color: t.primary,
     },
     progressTrack: {
       height: 8,
@@ -196,38 +190,14 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     startProgressColor: {
       color: t.primary,
     },
-    endProgressColor: { 
+    endProgressColor: {
       color: t.tertiary,
     },
     footer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
       borderTopWidth: 1,
       borderTopColor: t.border,
       paddingTop: sp[3],
       marginTop: sp[1],
     },
-    amountLabel: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-      marginBottom: 2,
-    },
-    originalAmountText: {
-      fontSize: fs.sm,
-      color: t.text,
-      fontWeight: fw.medium,
-    },
-    remainingAmountContainer: {
-      alignItems: "flex-end",
-    },
-    remainingAmountText: {
-      fontSize: fs.base,
-      color: t.primary,
-      fontWeight: fw.bold,
-    },
-    alignRight: {
-      textAlign: "right",
-    },
-  })
+  }),
 );
