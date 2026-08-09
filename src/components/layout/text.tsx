@@ -1,18 +1,18 @@
 import {
-  FontSizeKey,
-  FontWeightKey,
-  LineHeightKey,
+  Text as RNText,
+  type TextProps as RNTextProps,
+  type TextStyle,
+} from "react-native";
+import {
+  type FontSizeKey,
+  type FontWeightKey,
+  type LineHeightKey,
   lineHeight as lineHeightTokens,
-  SpacingKey,
+  type SpacingKey,
   spacing as spacingTokens,
-  ThemeColorKey,
+  type ThemeColorKey,
 } from "@/constants/tokens";
 import { useTheme } from "@/hooks/useTheme";
-import {
-  Text as RNText,
-  TextProps as RNTextProps,
-  TextStyle,
-} from "react-native";
 
 export const Variants = {
   normal: "Inter",

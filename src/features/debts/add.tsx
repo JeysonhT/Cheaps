@@ -92,7 +92,7 @@ export default function AddDebtScreen() {
       return;
     }
     const freq = parseInt(payFrequency, 10);
-    if (isNaN(freq) || freq <= 0) {
+    if (Number.isNaN(freq) || freq <= 0) {
       setErrorMsg("La frecuencia de pago debe ser al menos 1 día");
       return;
     }
@@ -176,11 +176,7 @@ export default function AddDebtScreen() {
             Registrar Deuda
           </Text>
           <View style={styles.helpButton}>
-            <MaterialIcons
-              name="info-outline"
-              size={24}
-              color={styles.iconMutedColor.color}
-            />
+            <MaterialIcons name="noise-control-off" size={24} color={"#fff"} />
           </View>
         </HStack>
 

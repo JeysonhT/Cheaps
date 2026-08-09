@@ -13,9 +13,8 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#FFFFFF",
-        "foregroundImage": "./src/assets/images/android-icon-foreground.png",
-        "backgroundImage": "./src/assets/images/android-icon-background.png",
-        "monochromeImage": "./src/assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./src/assets/images/cheaps_icon.png",
+        "backgroundImage": "./src/assets/images/cheaps_background.png"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.jeysonhdev.Cheaps"
@@ -38,7 +37,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./src/assets/images/splash-icon.png",
+          "image": "./src/assets/images/logotipo_cheaps.png",
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }

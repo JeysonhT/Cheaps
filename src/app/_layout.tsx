@@ -59,7 +59,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="(seller)" options={{ headerShown: false }} />
         </Stack>
-        <StatusBar style={scheme === "dark" ? "dark" : "light"}></StatusBar>
+        <StatusBar style={"dark"} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

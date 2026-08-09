@@ -97,9 +97,6 @@ export async function migrateDbIfNeeded(db: SQLite.SQLiteDatabase) {
     await db.execAsync(`
       ALTER TABLE user ADD COLUMN maxDebtMonth REAL DEFAULT 0;
       ALTER TABLE user ADD COLUMN maxDebtMonthLastUpdated TEXT DEFAULT '';
-      
-      INSERT OR IGNORE INTO user (id, name, last_name, person_id, phone_number, email, role, maxDebtMonth, maxDebtMonthLastUpdated)
-      VALUES (1, 'Usuario', 'Demo', '00000000', '00000000', 'demo@cheaps.com', 2, 0, '');
     `);
 
     user_version = 3;

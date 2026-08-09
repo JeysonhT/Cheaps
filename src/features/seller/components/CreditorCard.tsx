@@ -7,11 +7,13 @@ import type { Creditor } from "@/types";
 
 interface CreditorCardProps {
   creditor: Creditor;
+  onEdit?: (creditor: Creditor) => void;
   onDelete?: (id: number) => void;
 }
 
 export default function CreditorCard({
   creditor,
+  onEdit,
   onDelete,
 }: CreditorCardProps) {
   const styles = useStyles();
@@ -58,6 +60,18 @@ export default function CreditorCard({
               />
             </Pressable>
           )}
+          {onEdit && (
+            <Pressable
+              onPress={() => onEdit(creditor)}
+              style={styles.actionButton}
+            >
+              <MaterialIcons
+                name="edit"
+                size={20}
+                color={styles.editIconColor.color}
+              />
+            </Pressable>
+          )}
           {onDelete && (
             <Pressable
               onPress={() => onDelete(creditor.id)}
@@ -76,7 +90,7 @@ export default function CreditorCard({
   );
 }
 
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
+const useStyles = makeStyles((t, sp, _fs, _fw, r) =>
   StyleSheet.create({
     card: {
       backgroundColor: t.bgElevated,
@@ -112,6 +126,9 @@ const useStyles = makeStyles((t, sp, fs, fw, r) =>
     },
     callIconColor: {
       color: t.secondary,
+    },
+    editIconColor: {
+      color: t.primary,
     },
     deleteIconColor: {
       color: t.error,

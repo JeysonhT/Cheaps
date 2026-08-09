@@ -3,7 +3,7 @@ import useUserStore from "@/store/useUserStore";
 
 type ContextValues = {
   isInit: boolean;
-  setInit: (isInit: boolean) => void;
+  setInit: (isInit: boolean, name: string, lastName: string) => void;
   isLoading: boolean;
 };
 

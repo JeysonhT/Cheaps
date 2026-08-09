@@ -6,16 +6,22 @@ import { Text, VStack } from "@/components/layout";
 import HistoryElement from "@/features/history/components/HistoryElement";
 import { useHistory } from "@/features/history/hooks/useHistory";
 import { makeStyles } from "@/hooks/useTheme";
+import { useGetUserStats } from "../hooks/useGetUserStats";
 
 export default function HistoryOverview() {
   const styles = useStyles();
   const { payments, fetchHistory } = useHistory();
+
+  const { userFullName } = useGetUserStats();
 
   useEffect(() => {
     fetchHistory();
   }, [fetchHistory]);
 
   const displayedPayments = payments.slice(0, 3);
+  const greetingName = userFullName
+    ? `${userFullName.name} ${userFullName.lastName}`
+    : "usuario";
 
   return (
     <VStack p="2" style={styles.mainView}>
@@ -35,7 +41,7 @@ export default function HistoryOverview() {
                 align="center"
                 style={{ fontStyle: "italic" }}
               >
-                No hay abonos registrados recientemente
+                {`Hola ${greetingName},\n\nAún no tienes pagos registrados.`}
               </Text>
             </VStack>
           ) : (
