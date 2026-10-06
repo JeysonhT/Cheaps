@@ -1,5 +1,5 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import { Building2, Plus } from "lucide-react-native";
 import { useEffect } from "react";
 import {
 	ActivityIndicator,
@@ -63,8 +63,7 @@ export default function SellerDashboard() {
 	const renderEmpty = () => (
 		<VStack align="center" justify="center" style={styles.emptyContainer}>
 			<View style={styles.emptyIconContainer}>
-				<MaterialIcons
-					name="account-balance"
+				<Building2
 					size={48}
 					color={styles.emptyIconColor.color}
 				/>
@@ -114,7 +113,7 @@ export default function SellerDashboard() {
 				style={styles.fab}
 				onPress={() => router.push("/(tabs)/debts/addCreditor")}
 			>
-				<MaterialIcons name="add" size={24} color="#ffffff" />
+				<Plus size={24} color="#ffffff" />
 				<Text size="base" weight="bold" style={styles.fabText}>
 					Agregar Acreedor
 				</Text>

@@ -1,5 +1,17 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import {
+  ArrowLeft,
+  Car,
+  ChevronDown,
+  CircleHelp,
+  CreditCard,
+  Home,
+  type LucideIcon,
+  MoreHorizontal,
+  Save,
+  User,
+  Zap,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -11,6 +23,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
 import { HStack, Text, VStack } from "@/components/layout";
 import Main from "@/components/StyledView";
 import { useCreditors } from "@/features/seller/hooks/useCreditors";
@@ -112,6 +125,13 @@ export default function AddDebtScreen() {
         amount: originalVal,
         currentAmount: currentVal,
       });
+
+      Toast.show({
+        type: "success",
+        text1: "¡Éxito!",
+        text2: "La deuda se registró correctamente",
+      });
+
       router.back();
     } catch (error: any) {
       setErrorMsg(error.message || "Ocurrió un error al registrar la deuda");
@@ -119,13 +139,13 @@ export default function AddDebtScreen() {
     }
   };
 
-  const typesList: { type: DebtType; label: string; icon: string }[] = [
-    { type: "personal", label: "Personal", icon: "person" },
-    { type: "tarjeta", label: "Tarjeta", icon: "credit-card" },
-    { type: "hipoteca", label: "Hipoteca", icon: "home" },
-    { type: "auto", label: "Auto", icon: "directions-car" },
-    { type: "servicio", label: "Servicio", icon: "bolt" },
-    { type: "otro", label: "Otro", icon: "more-horiz" },
+  const typesList: { type: DebtType; label: string; icon: LucideIcon }[] = [
+    { type: "personal", label: "Personal", icon: User },
+    { type: "tarjeta", label: "Tarjeta", icon: CreditCard },
+    { type: "hipoteca", label: "Hipoteca", icon: Home },
+    { type: "auto", label: "Auto", icon: Car },
+    { type: "servicio", label: "Servicio", icon: Zap },
+    { type: "otro", label: "Otro", icon: MoreHorizontal },
   ];
 
   const selectedCreditorName = selectedCreditorId
@@ -166,8 +186,7 @@ export default function AddDebtScreen() {
         {/* Custom Header */}
         <HStack align="center" justify="space-between" style={styles.header}>
           <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <MaterialIcons
-              name="arrow-back"
+            <ArrowLeft
               size={24}
               color={styles.iconColor.color}
             />
@@ -176,7 +195,7 @@ export default function AddDebtScreen() {
             Registrar Deuda
           </Text>
           <View style={styles.helpButton}>
-            <MaterialIcons name="noise-control-off" size={24} color={"#fff"} />
+            <CircleHelp size={24} color={"#fff"} />
           </View>
         </HStack>
 
@@ -188,7 +207,7 @@ export default function AddDebtScreen() {
           {/* Welcome Info Card */}
           <HStack align="flex-start" gap="3" style={styles.introCard}>
             <View style={styles.introIconContainer}>
-              <MaterialIcons name="add-card" size={24} color="#064e3b" />
+              <CreditCard size={24} color="#064e3b" />
             </View>
             <VStack flex={1}>
               <Text size="md" weight="bold" color="text" mb="1">
@@ -226,8 +245,7 @@ export default function AddDebtScreen() {
                   >
                     {selectedCreditorName}
                   </Text>
-                  <MaterialIcons
-                    name="expand-more"
+                  <ChevronDown
                     size={24}
                     color={styles.iconMutedColor.color}
                   />
@@ -301,6 +319,7 @@ export default function AddDebtScreen() {
               <View style={styles.typesGrid}>
                 {typesList.map((item) => {
                   const isActive = debtType === item.type;
+                  const TypeIcon = item.icon;
                   return (
                     <Pressable
                       key={item.type}
@@ -316,8 +335,7 @@ export default function AddDebtScreen() {
                           isActive && styles.typeButtonActive,
                         ]}
                       >
-                        <MaterialIcons
-                          name={item.icon as any}
+                        <TypeIcon
                           size={20}
                           color={
                             isActive ? "#ffffff" : styles.iconMutedColor.color
@@ -544,7 +562,7 @@ export default function AddDebtScreen() {
                 <ActivityIndicator size="small" color="#ffffff" />
               ) : (
                 <>
-                  <MaterialIcons name="save" size={20} color="#ffffff" />
+                  <Save size={20} color="#ffffff" />
                   <Text size="md" weight="bold" style={styles.submitButtonText}>
                     Registrar Deuda
                   </Text>

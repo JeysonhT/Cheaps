@@ -83,8 +83,9 @@ export const Text = ({
 
   flex,
   style,
+  className,
   ...props
-}: TextProps) => {
+}: TextProps & { className?: string }) => {
   const { t, fs, fw } = useTheme();
 
   // Resolve fontSize from tokens
@@ -93,38 +94,37 @@ export const Text = ({
   // Resolve lineHeight (computed dynamically based on fontSize * multiplier)
   const lhValue = lh ? Math.round(fsValue * lineHeightTokens[lh]) : undefined;
 
+  const dynamicStyle: TextStyle = {
+    fontFamily: Variants[variant],
+    fontSize: fsValue,
+    fontWeight: fw[weight],
+    color: t[color],
+  };
+
+  if (lhValue !== undefined) dynamicStyle.lineHeight = lhValue;
+  if (align !== undefined) dynamicStyle.textAlign = align;
+  if (flex !== undefined) dynamicStyle.flex = flex;
+
+  if (p !== undefined) dynamicStyle.padding = spacingTokens[p];
+  if (pt !== undefined) dynamicStyle.paddingTop = spacingTokens[pt];
+  if (pb !== undefined) dynamicStyle.paddingBottom = spacingTokens[pb];
+  if (pl !== undefined) dynamicStyle.paddingLeft = spacingTokens[pl];
+  if (pr !== undefined) dynamicStyle.paddingRight = spacingTokens[pr];
+  if (px !== undefined) dynamicStyle.paddingHorizontal = spacingTokens[px];
+  if (py !== undefined) dynamicStyle.paddingVertical = spacingTokens[py];
+
+  if (m !== undefined) dynamicStyle.margin = spacingTokens[m];
+  if (mt !== undefined) dynamicStyle.marginTop = spacingTokens[mt];
+  if (mb !== undefined) dynamicStyle.marginBottom = spacingTokens[mb];
+  if (ml !== undefined) dynamicStyle.marginLeft = spacingTokens[ml];
+  if (mr !== undefined) dynamicStyle.marginRight = spacingTokens[mr];
+  if (mx !== undefined) dynamicStyle.marginHorizontal = spacingTokens[mx];
+  if (my !== undefined) dynamicStyle.marginVertical = spacingTokens[my];
+
   return (
     <RNText
-      style={[
-        {
-          fontFamily: Variants[variant],
-          fontSize: fsValue,
-          fontWeight: fw[weight],
-          color: t[color],
-          lineHeight: lhValue,
-          textAlign: align,
-          flex,
-
-          // Paddings
-          padding: p ? spacingTokens[p] : undefined,
-          paddingTop: pt ? spacingTokens[pt] : undefined,
-          paddingBottom: pb ? spacingTokens[pb] : undefined,
-          paddingLeft: pl ? spacingTokens[pl] : undefined,
-          paddingRight: pr ? spacingTokens[pr] : undefined,
-          paddingHorizontal: px ? spacingTokens[px] : undefined,
-          paddingVertical: py ? spacingTokens[py] : undefined,
-
-          // Margins
-          margin: m ? spacingTokens[m] : undefined,
-          marginTop: mt ? spacingTokens[mt] : undefined,
-          marginBottom: mb ? spacingTokens[mb] : undefined,
-          marginLeft: ml ? spacingTokens[ml] : undefined,
-          marginRight: mr ? spacingTokens[mr] : undefined,
-          marginHorizontal: mx ? spacingTokens[mx] : undefined,
-          marginVertical: my ? spacingTokens[my] : undefined,
-        },
-        style,
-      ]}
+      className={className}
+      style={[dynamicStyle, style]}
       {...props}
     />
   );

@@ -1,4 +1,4 @@
-import { View, type ViewProps } from "react-native";
+import { View, type ViewProps, type ViewStyle } from "react-native";
 import { type SpacingKey, spacing as tokens } from "@/constants/tokens";
 
 interface StackProps extends ViewProps {
@@ -7,6 +7,7 @@ interface StackProps extends ViewProps {
   flex?: number;
   align?: "center" | "flex-start" | "flex-end" | "stretch";
   justify?: "center" | "space-between" | "flex-start" | "flex-end";
+  className?: string;
 }
 
 export const VStack = ({
@@ -16,21 +17,22 @@ export const VStack = ({
   align,
   justify,
   style,
+  className,
   ...props
 }: StackProps) => {
+  const dynamicStyle: ViewStyle = {
+    flexDirection: "column",
+  };
+  if (gap !== undefined) dynamicStyle.gap = tokens[gap];
+  if (p !== undefined) dynamicStyle.padding = tokens[p];
+  if (flex !== undefined) dynamicStyle.flex = flex;
+  if (align !== undefined) dynamicStyle.alignItems = align;
+  if (justify !== undefined) dynamicStyle.justifyContent = justify;
+
   return (
     <View
-      style={[
-        {
-          flexDirection: "column",
-          gap: gap ? tokens[gap] : undefined,
-          padding: p ? tokens[p] : undefined,
-          flex,
-          alignItems: align,
-          justifyContent: justify,
-        },
-        style,
-      ]}
+      className={className}
+      style={[dynamicStyle, style]}
       {...props}
     />
   );
@@ -43,21 +45,22 @@ export const HStack = ({
   align,
   justify,
   style,
+  className,
   ...props
 }: StackProps) => {
+  const dynamicStyle: ViewStyle = {
+    flexDirection: "row",
+  };
+  if (gap !== undefined) dynamicStyle.gap = tokens[gap];
+  if (p !== undefined) dynamicStyle.padding = tokens[p];
+  if (flex !== undefined) dynamicStyle.flex = flex;
+  if (align !== undefined) dynamicStyle.alignItems = align;
+  if (justify !== undefined) dynamicStyle.justifyContent = justify;
+
   return (
     <View
-      style={[
-        {
-          flexDirection: "row",
-          gap: gap ? tokens[gap] : undefined,
-          padding: p ? tokens[p] : undefined,
-          flex,
-          alignItems: align,
-          justifyContent: justify,
-        },
-        style,
-      ]}
+      className={className}
+      style={[dynamicStyle, style]}
       {...props}
     />
   );

@@ -1,7 +1,14 @@
-import MaterialIcons, {
-  type MaterialIconsIconName,
-} from "@react-native-vector-icons/material-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import {
+  Building2,
+  Car,
+  CreditCard,
+  Home,
+  type LucideIcon,
+  MoreHorizontal,
+  User,
+  Zap,
+} from "lucide-react-native";
 import { StyleSheet, View } from "react-native";
 import Card from "@/components/Card";
 import { HStack, Text, VStack } from "@/components/layout";
@@ -13,20 +20,20 @@ interface SellerCardProps {
   largestDebt: DebtWithCreditor | null;
 }
 
-const getDebtIcon = (type: DebtType): string => {
+const getDebtIcon = (type: DebtType): LucideIcon => {
   switch (type) {
     case "personal":
-      return "person";
+      return User;
     case "tarjeta":
-      return "credit-card";
+      return CreditCard;
     case "hipoteca":
-      return "home";
+      return Home;
     case "auto":
-      return "directions-car";
+      return Car;
     case "servicio":
-      return "bolt";
+      return Zap;
     default:
-      return "more-horiz";
+      return MoreHorizontal;
   }
 };
 
@@ -44,17 +51,14 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
     return `C$ ${val.toLocaleString("es-NI", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
+  const IconComponent = hasDebt ? getDebtIcon(largestDebt.type) : Building2;
+
   return (
     <Card style={styles.card}>
       <VStack gap="2">
         <HStack align="center">
           <View style={styles.iconView}>
-            <MaterialIcons
-              name={
-                hasDebt
-                  ? (getDebtIcon(largestDebt!.type) as MaterialIconsIconName)
-                  : "corporate-fare"
-              }
+            <IconComponent
               color="#ffffff"
               size={24}
             />

@@ -1,5 +1,5 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import { CreditCard, Plus, User } from "lucide-react-native";
 import { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -93,7 +93,7 @@ export default function DebtsDashboard() {
       <HStack justify="flex-end" p="2">
         <Button
           label="Acreedores"
-          icon="person"
+          icon={User}
           onPress={handleClickCreditors}
         />
       </HStack>
@@ -103,8 +103,7 @@ export default function DebtsDashboard() {
   const renderEmpty = () => (
     <VStack align="center" justify="center" style={styles.emptyContainer}>
       <View style={styles.emptyIconContainer}>
-        <MaterialIcons
-          name="add-card"
+        <CreditCard
           size={48}
           color={styles.emptyIconColor.color}
         />
@@ -150,7 +149,7 @@ export default function DebtsDashboard() {
         style={styles.fab}
         onPress={() => router.push("/(tabs)/debts/add")}
       >
-        <MaterialIcons name="add" size={24} color="#ffffff" />
+        <Plus size={24} color="#ffffff" />
         <Text size="base" weight="bold" style={styles.fabText}>
           Agregar Deuda
         </Text>

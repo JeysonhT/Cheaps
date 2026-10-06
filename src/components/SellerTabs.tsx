@@ -1,6 +1,11 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Tabs } from "expo-router";
 import type { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import {
+  CreditCard,
+  LayoutDashboard,
+  ReceiptText,
+  RefreshCw,
+} from "lucide-react-native";
 
 type ClientTabsProps = {
   options: BottomTabNavigationOptions;
@@ -15,7 +20,7 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="dashboard" color={color} size={iconSize} />
+            <LayoutDashboard color={color} size={iconSize} />
           ),
         }}
       />
@@ -24,7 +29,7 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Historial",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="receipt-long" color={color} size={iconSize} />
+            <ReceiptText color={color} size={iconSize} />
           ),
         }}
       />
@@ -33,7 +38,7 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Terminal",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="credit-card" color={color} size={iconSize} />
+            <CreditCard color={color} size={iconSize} />
           ),
         }}
       />
@@ -42,7 +47,7 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Sync",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="sync" color={color} size={iconSize} />
+            <RefreshCw color={color} size={iconSize} />
           ),
         }}
       />

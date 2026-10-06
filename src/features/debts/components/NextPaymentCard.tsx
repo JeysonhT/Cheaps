@@ -1,4 +1,4 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { Banknote, CalendarSync, CheckCircle2 } from "lucide-react-native";
 import { Pressable, StyleSheet } from "react-native";
 import { HStack, Text, VStack } from "@/components/layout";
 import { makeStyles } from "@/hooks/useTheme";
@@ -33,8 +33,7 @@ export default function NextPaymentCard({
 		<VStack gap="4" style={styles.nextPayCard}>
 			<VStack>
 				<HStack align="center" gap="2" style={styles.nextPayHeader}>
-					<MaterialIcons
-						name="event-repeat"
+					<CalendarSync
 						size={24}
 						color="#ffffff"
 						style={styles.nextPayIcon}
@@ -71,7 +70,7 @@ export default function NextPaymentCard({
 					onPress={onRegisterPayment}
 				>
 					<HStack align="center" justify="center" gap="2" p="2">
-						<MaterialIcons name="payments" size={20} color="#064e3b" />
+						<Banknote size={20} color="#064e3b" />
 						<Text size="base" weight="bold" style={styles.registerPayBtnText}>
 							Registrar Pago
 						</Text>
@@ -84,7 +83,7 @@ export default function NextPaymentCard({
 					gap="2"
 					style={styles.paidBadge}
 				>
-					<MaterialIcons name="check-circle" size={20} color="#ffffff" />
+					<CheckCircle2 size={20} color="#ffffff" />
 					<Text size="base" weight="bold" style={styles.paidBadgeText}>
 						Deuda Liquidada
 					</Text>

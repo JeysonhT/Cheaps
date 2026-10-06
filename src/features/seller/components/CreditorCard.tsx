@@ -1,4 +1,4 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { Building2, Pencil, Phone, Trash2 } from "lucide-react-native";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 import Card from "@/components/Card";
 import { HStack, Text, VStack } from "@/components/layout";
@@ -28,8 +28,7 @@ export default function CreditorCard({
     <Card style={styles.card}>
       <HStack align="center">
         <View style={styles.avatar}>
-          <MaterialIcons
-            name="corporate-fare"
+          <Building2
             size={24}
             color={styles.iconColor.color}
           />
@@ -53,8 +52,7 @@ export default function CreditorCard({
         <HStack align="center" gap="2">
           {creditor.phoneNumber && (
             <Pressable onPress={handleCall} style={styles.actionButton}>
-              <MaterialIcons
-                name="call"
+              <Phone
                 size={20}
                 color={styles.callIconColor.color}
               />
@@ -65,8 +63,7 @@ export default function CreditorCard({
               onPress={() => onEdit(creditor)}
               style={styles.actionButton}
             >
-              <MaterialIcons
-                name="edit"
+              <Pencil
                 size={20}
                 color={styles.editIconColor.color}
               />
@@ -77,8 +74,7 @@ export default function CreditorCard({
               onPress={() => onDelete(creditor.id)}
               style={[styles.actionButton, styles.deleteButton]}
             >
-              <MaterialIcons
-                name="delete-outline"
+              <Trash2
                 size={20}
                 color={styles.deleteIconColor.color}
               />

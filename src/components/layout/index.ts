@@ -1,2 +1,2 @@
-export * from "./viewStack";
 export * from "./text";
+export * from "./viewStack";

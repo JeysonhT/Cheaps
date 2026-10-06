@@ -1,5 +1,5 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Link } from "expo-router";
+import { ChevronRight } from "lucide-react-native";
 import { useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { HStack, Text, VStack } from "@/components/layout";
@@ -53,8 +53,7 @@ export default function SellersOverview() {
               <Text size="sm" color="textMuted">
                 Ver todos
               </Text>
-              <MaterialIcons
-                name="keyboard-arrow-right"
+              <ChevronRight
                 size={20}
                 color={Colors.light.tabIconDefault}
               />

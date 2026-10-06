@@ -1,4 +1,4 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { ReceiptText } from "lucide-react-native";
 import { useEffect } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { Text, VStack } from "@/components/layout";
@@ -43,8 +43,7 @@ export default function HistoryDashboard() {
   const renderEmpty = () => (
     <VStack align="center" justify="center" style={styles.emptyContainer}>
       <View style={styles.emptyIconContainer}>
-        <MaterialIcons
-          name="receipt-long"
+        <ReceiptText
           size={24}
           color={styles.emptyIconColor.color}
         />

@@ -1,3 +1,4 @@
+import "../global.css";
 import { useFonts } from "expo-font";
 import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -6,6 +7,7 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ToastMessage, toastConfig } from "@/components/Toast/CheapsToast";
 import { getDb } from "../lib/SqliteHelper";
 
 export {
@@ -60,6 +62,7 @@ function RootLayoutNav() {
           <Stack.Screen name="(seller)" options={{ headerShown: false }} />
         </Stack>
         <StatusBar style={"dark"} />
+        <ToastMessage config={toastConfig} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

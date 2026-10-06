@@ -20,20 +20,10 @@
       "package": "com.jeysonhdev.Cheaps"
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./src/assets/images/favicon.png"
+      "bundler": "metro"
     },
     "plugins": [
-      [
-        "expo-router",
-        {
-          "headers": {
-            "Cross-Origin-Embedder-Policy": "credentialless",
-            "Cross-Origin-Opener-Policy": "same-origin"
-          }
-        }
-      ],
+      "expo-router",
       [
         "expo-splash-screen",
         {
@@ -42,7 +32,6 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "@react-native-vector-icons/material-icons",
       [
         "expo-sqlite",
         {

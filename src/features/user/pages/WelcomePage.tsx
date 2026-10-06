@@ -7,10 +7,10 @@ import useUserContext from "@/context/useUserContext";
 import WELCOME_COMPONENTS from "../constants/welcomeComponents";
 import useWelcomePageStore from "../store/useWelcomePage";
 
-const WELCOME_ELEMENTS = ["greeting", "guide", "tips"];
+const WELCOME_ELEMENTS = ["greeting", "guide", "finish"];
 
 export default function WelcomePage() {
-  const { currentComponent, lastComponent, setNetx } = useWelcomePageStore();
+  const { currentComponent, setNetx } = useWelcomePageStore();
 
   const [index, setIndex] = useState(0);
 

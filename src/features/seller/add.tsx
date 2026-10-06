@@ -1,5 +1,13 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import {
+	ArrowLeft,
+	Banknote,
+	Building2,
+	CircleHelp,
+	Info,
+	Phone,
+	Save,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
 	ActivityIndicator,
@@ -85,8 +93,7 @@ export default function AddCreditorScreen() {
 				{/* Custom Header */}
 				<HStack align="center" justify="space-between" style={styles.header}>
 					<Pressable onPress={() => router.back()} style={styles.backButton}>
-						<MaterialIcons
-							name="arrow-back"
+						<ArrowLeft
 							size={24}
 							color={styles.iconColor.color}
 						/>
@@ -95,8 +102,7 @@ export default function AddCreditorScreen() {
 						{isEditing ? "Editar Acreedor" : "Agregar Acreedor"}
 					</Text>
 					<View style={styles.helpButton}>
-						<MaterialIcons
-							name="help-outline"
+						<CircleHelp
 							size={24}
 							color={styles.iconMutedColor.color}
 						/>
@@ -139,8 +145,7 @@ export default function AddCreditorScreen() {
 									isNameFocused && styles.inputWrapperFocused,
 								]}
 							>
-								<MaterialIcons
-									name="corporate-fare"
+								<Building2
 									size={20}
 									color={
 										isNameFocused
@@ -185,8 +190,7 @@ export default function AddCreditorScreen() {
 									isPhoneFocused && styles.inputWrapperFocused,
 								]}
 							>
-								<MaterialIcons
-									name="call"
+								<Phone
 									size={20}
 									color={
 										isPhoneFocused
@@ -219,8 +223,7 @@ export default function AddCreditorScreen() {
 
 						{/* Informational Note */}
 						<HStack style={styles.infoNote}>
-							<MaterialIcons
-								name="info-outline"
+							<Info
 								size={20}
 								color={styles.infoIconColor.color}
 								style={styles.infoIcon}
@@ -241,8 +244,7 @@ export default function AddCreditorScreen() {
 					{/* Decorative Illustration Banner */}
 					<VStack style={{ marginBottom: 24 }}>
 						<VStack align="center" justify="center" style={styles.bannerCard}>
-							<MaterialIcons
-								name="money"
+							<Banknote
 								size={36}
 								color={styles.bannerIconColor.color}
 								style={styles.bannerIcon}
@@ -278,7 +280,7 @@ export default function AddCreditorScreen() {
 								<Text size="base" weight="bold" style={styles.submitButtonText}>
 									{isEditing ? "Actualizar Acreedor" : "Guardar Acreedor"}
 								</Text>
-								<MaterialIcons name="save" size={20} color="#ffffff" />
+								<Save size={20} color="#ffffff" />
 							</>
 						)}
 					</Pressable>

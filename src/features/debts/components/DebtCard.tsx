@@ -1,8 +1,15 @@
-import MaterialIcons, {
-  type MaterialIconsIconName,
-} from "@react-native-vector-icons/material-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import {
+  Car,
+  CreditCard,
+  Home,
+  type LucideIcon,
+  MoreHorizontal,
+  Trash2,
+  User,
+  Zap,
+} from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import Card from "@/components/Card";
 import { HStack, Text, VStack } from "@/components/layout";
@@ -14,26 +21,27 @@ interface DebtCardProps {
   onDelete?: (id: number) => void;
 }
 
-const getDebtIcon = (type: DebtType): string => {
+const getDebtIcon = (type: DebtType): LucideIcon => {
   switch (type) {
     case "personal":
-      return "person";
+      return User;
     case "tarjeta":
-      return "credit-card";
+      return CreditCard;
     case "hipoteca":
-      return "home";
+      return Home;
     case "auto":
-      return "directions-car";
+      return Car;
     case "servicio":
-      return "bolt";
+      return Zap;
     default:
-      return "more-horiz";
+      return MoreHorizontal;
   }
 };
 
 export default function DebtCard({ debt, onDelete }: DebtCardProps) {
   const styles = useStyles();
   const router = useRouter();
+  const DebtIcon = getDebtIcon(debt.type);
 
   // Calcular progreso (monto pagado vs monto original)
   const original = debt.amount;
@@ -54,8 +62,7 @@ export default function DebtCard({ debt, onDelete }: DebtCardProps) {
           {/* Header section with Icon and Details */}
           <HStack align="center">
             <View style={styles.iconView}>
-              <MaterialIcons
-                name={getDebtIcon(debt.type) as MaterialIconsIconName}
+              <DebtIcon
                 color={styles.avatarIconColor.color}
                 size={24}
               />
@@ -76,8 +83,7 @@ export default function DebtCard({ debt, onDelete }: DebtCardProps) {
                 style={styles.deleteButton}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <MaterialIcons
-                  name="delete-outline"
+                <Trash2
                   size={20}
                   color={styles.deleteIconColor.color}
                 />

@@ -30,7 +30,7 @@ export async function setInitState(
     RETURNING name;
     `,
     name || "user",
-    lastName || "lastName",
+    lastName || "Deudor",
   );
 
   if (!result?.name) {

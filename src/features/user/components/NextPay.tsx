@@ -1,4 +1,4 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { Calendar } from "lucide-react-native";
 import React from "react";
 import { StyleSheet } from "react-native";
 import Card from "@/components/Card";
@@ -17,7 +17,7 @@ export default function NextPay({ debt }: NextPayProps) {
     return (
       <Card style={styles.card}>
         <HStack align="center" gap="2" style={styles.top}>
-          <MaterialIcons name="event" color="#ffffff" size={24} />
+          <Calendar color="#ffffff" size={24} />
           <Text size="sm" weight="medium" style={styles.textInverse}>
             Próximo Pago
           </Text>
@@ -78,7 +78,7 @@ export default function NextPay({ debt }: NextPayProps) {
   return (
     <Card style={styles.card}>
       <HStack align="center" gap="2" style={styles.top}>
-        <MaterialIcons name="event" color="#ffffff" size={24} />
+        <Calendar color="#ffffff" size={24} />
         <Text size="sm" weight="medium" style={styles.textInverse}>
           Próximo Pago: {debt.name}
         </Text>

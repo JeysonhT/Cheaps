@@ -1,5 +1,5 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import { CheckCircle2 } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 import { HStack, Text, VStack } from "@/components/layout";
 import { makeStyles } from "@/hooks/useTheme";
@@ -26,8 +26,7 @@ export default function HistoryElement({ payment }: HistoryElementProps) {
     >
       <HStack align="center" gap="3" flex={1}>
         <View style={styles.iconView}>
-          <MaterialIcons
-            name="check-circle"
+          <CheckCircle2
             size={24}
             color={styles.checkIconColor.color}
           />
