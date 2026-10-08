@@ -1,7 +1,6 @@
 import { Link } from "expo-router";
 import { useEffect } from "react";
-import { Pressable, ScrollView, Text } from "react-native";
-import { HStack, VStack } from "@/components/layout";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import { useCreditors } from "@/features/seller/hooks/useCreditors";
 import type { Creditor, DebtWithCreditor } from "@/types";
@@ -38,8 +37,8 @@ export default function SellersOverview() {
   );
 
   return (
-    <VStack className="p-2">
-      <HStack className="justify-between items-center mb-2">
+    <View className="p-2">
+      <View className="flex-row justify-between items-center mb-2">
         <Text className="text-xl font-bold text-gray-900">Mis acreedores</Text>
         <Link
           href={"/(tabs)/debts/sellers"}
@@ -49,14 +48,14 @@ export default function SellersOverview() {
             <Text className="text-sm text-white font-medium">Ver todos</Text>
           </Pressable>
         </Link>
-      </HStack>
+      </View>
 
       {creditors.length === 0 ? (
-        <VStack className="items-center justify-center p-4 bg-gray-100 rounded-lg border border-gray-300">
+        <View className="items-center justify-center p-4 bg-gray-100 rounded-lg border border-gray-300">
           <Text className="text-sm text-gray-700 italic">
             No tienes acreedores registrados
           </Text>
-        </VStack>
+        </View>
       ) : (
         <ScrollView
           scrollEnabled
@@ -83,6 +82,6 @@ export default function SellersOverview() {
           )}
         </ScrollView>
       )}
-    </VStack>
+    </View>
   );
 }

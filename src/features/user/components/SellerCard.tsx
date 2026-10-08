@@ -11,7 +11,6 @@ import {
 } from "lucide-react-native";
 import { Text, View } from "react-native";
 import Card from "@/components/Card";
-import { HStack, VStack } from "@/components/layout";
 import type { Creditor, DebtType, DebtWithCreditor } from "@/types";
 
 interface SellerCardProps {
@@ -52,15 +51,15 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
 
   return (
     <Card className="bg-slate-200 w-[280] p-3">
-      <VStack className="gap-2">
-        <HStack className="items-center">
+      <View className="gap-2">
+        <View className="flex-row items-center">
           <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
             <IconComponent
               color="#ffffff"
               size={24}
             />
           </View>
-          <VStack className="flex-1 justify-center ml-2">
+          <View className="flex-1 justify-center ml-2">
             <Text
               className="font-bold"
               numberOfLines={1}
@@ -73,14 +72,14 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
             >
               {hasDebt ? largestDebt!.name : "Sin deudas activas"}
             </Text>
-          </VStack>
-        </HStack>
+          </View>
+        </View>
 
-        <VStack className="mt-1">
-          <HStack className="mb-1 justify-between items-center">
+        <View className="mt-1">
+          <View className="flex-row mb-1 justify-between items-center">
             <Text className="text-xs text-slate-500">Progreso</Text>
             <Text className="text-xs text-slate-900">{`${Math.round(progressPct * 100)}%`}</Text>
-          </HStack>
+          </View>
           {/* Progress bar track */}
           <View className="height-6 rounded-full bg-slate-400 overflow-hidden">
             {/* Gradient fill */}
@@ -95,15 +94,15 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
               }}
             />
           </View>
-        </VStack>
+        </View>
 
-        <HStack className="justify-between items-center mt-1 border-t-4 border-t-slate-400">
+        <View className="flex-row justify-between items-center mt-1 border-t-4 border-t-slate-400">
           <Text className="text-xs text-slate-500">Restante</Text>
           <Text className="font-bold text-slate-900">
             {formatCurrency(current)}
           </Text>
-        </HStack>
-      </VStack>
+        </View>
+      </View>
     </Card>
   );
 }

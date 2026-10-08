@@ -9,7 +9,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { VStack } from "@/components/layout";
 import { useCreditors } from "@/features/seller/hooks/useCreditors";
 import type { Creditor } from "@/types";
 import CreditorCard from "./components/CreditorCard";
@@ -48,16 +47,16 @@ export default function SellerDashboard() {
   };
 
   const renderHeader = () => (
-    <VStack className="px-4 py-4 pb-2">
+    <View className="px-4 py-4 pb-2">
       <Text className="text-2xl font-bold text-primary">Mis Acreedores</Text>
       <Text className="text-base text-slate-400 mt-1">
         Lista y gestiona las entidades a las que les debes
       </Text>
-    </VStack>
+    </View>
   );
 
   const renderEmpty = () => (
-    <VStack className="align-center justify-center px-8 mt-20">
+    <View className="items-center justify-center px-8 mt-20">
       <View className="w-20 h-20 rounded-full bg-slate-50 items-center justify-center mb-4">
         <Building2
           size={48}
@@ -71,18 +70,18 @@ export default function SellerDashboard() {
         Comienza agregando tu primer acreedor para llevar el control de tus
         deudas.
       </Text>
-    </VStack>
+    </View>
   );
 
   return (
-    <VStack className="flex-1 bg-white">
+    <View className="flex-1 bg-white">
       {isLoading && creditors.length === 0 ? (
-        <VStack className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center">
           <ActivityIndicator
             size="large"
             color="#064E3B"
           />
-        </VStack>
+        </View>
       ) : (
         <FlatList
           data={creditors}
@@ -113,6 +112,6 @@ export default function SellerDashboard() {
         />
         <Text className="text-white font-bold">Agregar Acreedor</Text>
       </Pressable>
-    </VStack>
+    </View>
   );
 }

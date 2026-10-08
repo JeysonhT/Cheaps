@@ -1,7 +1,6 @@
 import { Calendar } from "lucide-react-native";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import Card from "@/components/Card";
-import { HStack } from "@/components/layout";
 
 import type { DebtWithCreditor } from "@/types";
 
@@ -13,17 +12,17 @@ export default function NextPay({ debt }: NextPayProps) {
   if (!debt) {
     return (
       <Card className="bg-primary-400 mt-2">
-        <HStack className="items-center gap-2 mb-1">
+        <View className="flex-row items-center gap-2 mb-1">
           <Calendar
             color="#ffffff"
             size={24}
           />
           <Text className="text-lg text-white font-medium">Próximo Pago</Text>
-        </HStack>
-        <HStack className="justify-between items-center">
+        </View>
+        <View className="flex-row justify-between items-center">
           <Text className="text-lg text-white font-bold">Sin deudas</Text>
           <Text className="text-sm text-white font-medium">Al día</Text>
-        </HStack>
+        </View>
       </Card>
     );
   }
@@ -71,7 +70,7 @@ export default function NextPay({ debt }: NextPayProps) {
 
   return (
     <Card className="bg-primary-400 mt-2">
-      <HStack className="items-center gap-2 mb-1">
+      <View className="flex-row items-center gap-2 mb-1">
         <Calendar
           color="#ffffff"
           size={24}
@@ -79,15 +78,15 @@ export default function NextPay({ debt }: NextPayProps) {
         <Text className="text-lg text-white font-medium">
           Próximo Pago: {debt.name}
         </Text>
-      </HStack>
-      <HStack className="items-center justify-between">
+      </View>
+      <View className="flex-row items-center justify-between">
         <Text className="text-lg text-white font-bold">
           {formatCurrency(displayInstallment)}
         </Text>
         <Text className="text-sm text-white font-medium">
           {getNextPayDate()}
         </Text>
-      </HStack>
+      </View>
     </Card>
   );
 }

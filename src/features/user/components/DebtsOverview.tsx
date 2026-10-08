@@ -1,7 +1,6 @@
 import { TrendingDown, TrendingUp } from "lucide-react-native";
 import { useEffect } from "react";
-import { Text } from "react-native";
-import { HStack, VStack } from "@/components/layout";
+import { Text, View } from "react-native";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import NextPay from "./NextPay";
 
@@ -42,7 +41,7 @@ export default function DebtsOverview() {
   const nextPay = nearDate ? debts.find((v) => v.id === nearDate.id) : null;
 
   return (
-    <VStack className="m-1 p-4 bg-primary-500 rounded-xl elevation-sm">
+    <View className="m-1 p-4 bg-primary-500 rounded-xl elevation-sm">
       <Text className="text-md text-slate-100 font-semibold uppercase">
         Deuda total pendiente
       </Text>
@@ -50,7 +49,7 @@ export default function DebtsOverview() {
         {formatCurrency(totalPending)}
       </Text>
 
-      <HStack className="mt-2 items-center gap-2">
+      <View className="flex-row mt-2 items-center gap-2">
         {isDown ? (
           <TrendingUp
             color={"#34d399"} // red for upward debt trend, light green for downward
@@ -68,9 +67,9 @@ export default function DebtsOverview() {
             : "Al día con el mes pasado"}
           {!isDown ? `${diffPct.toFixed(1)}% más que el mes pasado` : null}
         </Text>
-      </HStack>
+      </View>
 
       <NextPay debt={nextPay || null} />
-    </VStack>
+    </View>
   );
 }
