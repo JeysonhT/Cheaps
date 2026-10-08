@@ -9,10 +9,9 @@ import {
   User,
   Zap,
 } from "lucide-react-native";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Card from "@/components/Card";
-import { HStack, Text, VStack } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
+import { HStack, VStack } from "@/components/layout";
 import type { Creditor, DebtType, DebtWithCreditor } from "@/types";
 
 interface SellerCardProps {
@@ -38,8 +37,6 @@ const getDebtIcon = (type: DebtType): LucideIcon => {
 };
 
 export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
-  const styles = useStyles();
-
   // Calcular progreso y valores financieros
   const hasDebt = largestDebt !== null;
   const original = largestDebt ? largestDebt.amount : 0;
@@ -54,62 +51,48 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
   const IconComponent = hasDebt ? getDebtIcon(largestDebt.type) : Building2;
 
   return (
-    <Card style={styles.card}>
-      <VStack gap="2">
-        <HStack align="center">
-          <View style={styles.iconView}>
-            <IconComponent
-              color="#ffffff"
-              size={24}
-            />
+    <Card className="bg-slate-200 w-[280] p-3">
+      <VStack className="gap-2">
+        <HStack className="items-center">
+          <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
+            <IconComponent color="#ffffff" size={24} />
           </View>
-          <VStack flex={1} justify="center" style={{ marginLeft: 8 }}>
-            <Text size="base" weight="bold" color="text" numberOfLines={1}>
+          <VStack className="flex-1 justify-center ml-2">
+            <Text className="font-bold" numberOfLines={1}>
               {creditor.name}
             </Text>
-            <Text size="xs" color="textMuted" numberOfLines={1}>
+            <Text className="text-xs text-slate-500" numberOfLines={1}>
               {hasDebt ? largestDebt!.name : "Sin deudas activas"}
             </Text>
           </VStack>
         </HStack>
 
-        <VStack style={styles.progressSection}>
-          <HStack
-            justify="space-between"
-            align="center"
-            style={styles.bodyHead}
-          >
-            <Text size="xs" color="textMuted">
-              Progreso
-            </Text>
-            <Text
-              size="xs"
-              color="text"
-            >{`${Math.round(progressPct * 100)}%`}</Text>
+        <VStack className="mt-1">
+          <HStack className="mb-1 justify-between items-center">
+            <Text className="text-xs text-slate-500">Progreso</Text>
+            <Text className="text-xs text-slate-900">{`${Math.round(progressPct * 100)}%`}</Text>
           </HStack>
           {/* Progress bar track */}
-          <View style={styles.progressTrack}>
+          <View className="height-6 rounded-full bg-slate-400 overflow-hidden">
             {/* Gradient fill */}
             <LinearGradient
               colors={[
-                styles.startProgressColor.color,
-                styles.endProgressColor.color,
+                Styles.startProgressColor.color,
+                Styles.endProgressColor.color,
               ]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[
-                styles.progressFill,
+                Styles.progressFill,
                 { width: `${Math.round(progressPct * 100)}%` },
               ]}
             />
           </View>
         </VStack>
 
-        <HStack justify="space-between" align="center" style={styles.footer}>
-          <Text size="xs" color="textMuted">
-            Restante
-          </Text>
-          <Text size="base" weight="bold" color="text">
+        <HStack className="justify-between items-center mt-1 border-t-4 border-t-slate-400">
+          <Text className="text-xs text-slate-500">Restante</Text>
+          <Text className="font-bold text-slate-900">
             {formatCurrency(current)}
           </Text>
         </HStack>
@@ -118,48 +101,15 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
   );
 }
 
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    card: {
-      backgroundColor: t.bgSubtle,
-      width: 280,
-      padding: sp[3],
-    },
-    iconView: {
-      borderRadius: r.full,
-      backgroundColor: t.primary,
-      width: 40,
-      height: 40,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    progressSection: {
-      marginTop: sp[1],
-    },
-    bodyHead: {
-      marginBottom: sp[1],
-    },
-    startProgressColor: {
-      color: t.primary,
-    },
-    endProgressColor: {
-      color: t.tertiary,
-    },
-    progressTrack: {
-      height: 6,
-      borderRadius: r.full,
-      backgroundColor: t.bgMuted,
-      overflow: "hidden",
-    },
-    progressFill: {
-      height: "100%",
-      borderRadius: r.full,
-    },
-    footer: {
-      marginTop: sp[1],
-      borderTopWidth: 1,
-      borderTopColor: t.border,
-      paddingTop: sp[2],
-    },
-  }),
-);
+const Styles = StyleSheet.create({
+  startProgressColor: {
+    color: "#064E3B",
+  },
+  endProgressColor: {
+    color: "#059669",
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 100,
+  },
+});

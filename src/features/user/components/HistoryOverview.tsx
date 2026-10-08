@@ -9,7 +9,6 @@ import { makeStyles } from "@/hooks/useTheme";
 import { useGetUserStats } from "../hooks/useGetUserStats";
 
 export default function HistoryOverview() {
-  const styles = useStyles();
   const { payments, fetchHistory } = useHistory();
 
   const { userFullName } = useGetUserStats();
@@ -24,23 +23,23 @@ export default function HistoryOverview() {
     : "usuario";
 
   return (
-    <VStack p="2" style={styles.mainView}>
-      <Text size="lg" weight="bold" color="text">
+    <VStack className="p-2 shrink">
+      <Text
+        className="text-lg text-gray-900 font-bold"
+        size="lg"
+        weight="bold"
+        color="text"
+      >
         Historial reciente
       </Text>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.slider}
+        contentContainerClassName="pb-2"
       >
-        <Card style={styles.card}>
+        <Card className="p-0 bg-slate-200 mx-1 rounded-lg overflow-hidden">
           {payments.length === 0 ? (
             <VStack align="center" justify="center" p="4">
-              <Text
-                size="sm"
-                color="textMuted"
-                align="center"
-                style={{ fontStyle: "italic" }}
-              >
+              <Text className="text-sm text-gray-500 italic">
                 {`Hola ${greetingName},\n\nAún no tienes pagos registrados.`}
               </Text>
             </VStack>
@@ -50,7 +49,7 @@ export default function HistoryOverview() {
                 <View key={payment.id}>
                   <HistoryElement payment={payment} />
                   {index < displayedPayments.length - 1 && (
-                    <View style={styles.separator} />
+                    <View className="border-b border-slate-300" />
                   )}
                 </View>
               ))}
@@ -59,7 +58,7 @@ export default function HistoryOverview() {
 
           {payments.length > 0 && (
             <Link href="/(tabs)/history" asChild>
-              <Pressable style={styles.presableView}>
+              <Pressable className="bg-slate-200 rounded-b-lg h-[50] items-center justify-center">
                 <Text size="base" weight="medium" color="text">
                   Ver historial Completo
                 </Text>
@@ -71,26 +70,3 @@ export default function HistoryOverview() {
     </VStack>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    mainView: { flexShrink: 1 },
-    card: {
-      padding: sp[0],
-      backgroundColor: t.bgSubtle,
-      marginHorizontal: sp[1],
-      borderRadius: r.md,
-      overflow: "hidden",
-    },
-    separator: { borderBottomWidth: 1, borderBottomColor: t.bgMuted },
-    presableView: {
-      backgroundColor: t.bgMuted,
-      borderBottomStartRadius: r.md,
-      borderBottomEndRadius: r.md,
-      height: 50,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    slider: { paddingBottom: sp[2] },
-  }),
-);

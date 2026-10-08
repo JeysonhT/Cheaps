@@ -42,7 +42,7 @@ export default function DebtsOverview() {
   const nextPay = nearDate ? debts.find((v) => v.id === nearDate.id) : null;
 
   return (
-    <VStack className="m-1 p-4 bg-primary-500 rounded-lg shadow shadow-gray-900">
+    <VStack className="m-1 p-4 bg-primary-500 rounded-xl elevation-sm">
       <Text className="text-md text-slate-100 font-semibold uppercase">
         Deuda total pendiente
       </Text>

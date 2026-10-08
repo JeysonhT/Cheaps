@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, Text, View } from "react-native";
 import {
   Directions,
   Gesture,
@@ -14,10 +14,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
-import Button from "@/components/Button/Button";
-import { HStack, Text, VStack } from "@/components/layout";
+import Button from "@/components/Button";
 import Main from "@/components/StyledView";
-import { makeStyles } from "@/hooks/useTheme";
 import useGetGuideImages from "../../hooks/useGetGuideImages";
 import type { welcomeProps } from "../../types/user.types";
 
@@ -25,8 +23,6 @@ const _width = 300;
 
 export default function GuideScreen({ handleNext }: welcomeProps) {
   const { images, error } = useGetGuideImages();
-
-  const styles = useStyles();
 
   const [guideIndex, setGuideIndex] = useState(0);
 
@@ -69,9 +65,11 @@ export default function GuideScreen({ handleNext }: welcomeProps) {
   if (error) {
     return (
       <Main>
-        <VStack align="center" justify="center" flex={1}>
-          <Text>No se pudieron cargar las imagenes: {error.message}</Text>
-        </VStack>
+        <View className="flex-1 items-center justify-center p-4">
+          <Text className="text-base text-red-500 text-center">
+            No se pudieron cargar las imágenes: {error.message}
+          </Text>
+        </View>
       </Main>
     );
   }
@@ -79,68 +77,69 @@ export default function GuideScreen({ handleNext }: welcomeProps) {
   if (!images || images.length === 0) {
     return (
       <Main>
-        <VStack align="center" justify="center" flex={1}>
-          <ActivityIndicator color="#000" />
-        </VStack>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
+        </View>
       </Main>
     );
   }
 
   const renderCircles = () => {
     return (
-      <HStack p="2" gap="4" align="center" justify="center">
-        {[...Array(images.length)].map((_, i) => (
+      <View className="flex-row items-center justify-center p-2 gap-2">
+        {images.map((_, i) => (
           <View
             key={i.toString()}
-            style={[
-              styles.circle,
-              i === guideIndex ? styles.isActive : styles.inactive,
-            ]}
+            className={`h-2.5 rounded-full ${
+              i === guideIndex ? "w-6 bg-primary" : "w-2.5 bg-slate-300"
+            }`}
           />
         ))}
-      </HStack>
+      </View>
     );
   };
 
   return (
-    <GestureHandlerRootView>
-      <VStack align="center" justify="center" flex={1} p="2" gap="4">
-        <Text size="lg" weight="bold">
-          Guia Básica
+    <GestureHandlerRootView className="flex-1 w-full justify-between items-center">
+      {/* Header section */}
+      <View className="flex-1 items-center justify-center p-2">
+        <Text className="text-2xl font-bold text-slate-900 mb-1">
+          Guía Básica
         </Text>
-        <Text size="md" color="textMuted">
-          Desliza a hacia la izquierda para avanzar
+        <Text className="text-base text-slate-500 text-center">
+          Desliza hacia la izquierda para avanzar
         </Text>
-      </VStack>
+      </View>
+
+      {/* Carousel card section */}
       <GestureDetector gesture={fling}>
-        <VStack flex={8} align="center" justify="center">
+        <View className="flex-[8] items-center justify-center">
           <Animated.View style={animatedStyle}>
             <Image
               source={{ uri: images[guideIndex].image }}
               style={{ height: _width * 1.333, width: _width }}
+              className="rounded-2xl"
             />
           </Animated.View>
-          <Text size="md" align="center" my="4" variant="highlight">
+          <Text className="text-base font-semibold text-slate-800 text-center my-4 px-4">
             {images[guideIndex].title}
           </Text>
           {renderCircles()}
-        </VStack>
+        </View>
       </GestureDetector>
-      <VStack flex={1} align="center" justify="center">
+
+      {/* Action button section */}
+      <View className="flex-1 items-center justify-center w-full px-6">
         <Button
-          label="Siguiente Pagina"
+          label="Siguiente Página"
           onPress={handleNext}
           isInactive={guideIndex !== images.length - 1}
+          className="w-full"
         />
-      </VStack>
+      </View>
     </GestureHandlerRootView>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    circle: { borderRadius: r.full, width: 10, height: 10 },
-    inactive: { backgroundColor: t.bgMuted },
-    isActive: { backgroundColor: t.primary },
-  }),
-);

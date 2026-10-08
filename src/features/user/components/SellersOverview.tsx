@@ -1,17 +1,13 @@
 import { Link } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
 import { useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
-import { HStack, Text, VStack } from "@/components/layout";
-import Colors from "@/constants/Colors";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
+import { HStack, VStack } from "@/components/layout";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import { useCreditors } from "@/features/seller/hooks/useCreditors";
-import { makeStyles } from "@/hooks/useTheme";
 import type { Creditor, DebtWithCreditor } from "@/types";
 import SellerCard from "./SellerCard";
 
 export default function SellersOverview() {
-  const styles = useStyles();
   const { creditors, fetchCreditors } = useCreditors();
   const { debts, fetchDebts } = useDebts();
 
@@ -42,29 +38,19 @@ export default function SellersOverview() {
   );
 
   return (
-    <VStack p="2">
-      <HStack justify="space-between" align="center" style={styles.header}>
-        <Text size="lg" weight="bold" color="text">
-          Mis acreedores
-        </Text>
+    <VStack className="p-2">
+      <HStack className="justify-between items-center mb-2">
+        <Text className="text-xl font-bold text-gray-900">Mis acreedores</Text>
         <Link href={"/(tabs)/debts/sellers"} asChild>
-          <Pressable>
-            <HStack align="center">
-              <Text size="sm" color="textMuted">
-                Ver todos
-              </Text>
-              <ChevronRight
-                size={20}
-                color={Colors.light.tabIconDefault}
-              />
-            </HStack>
+          <Pressable className="items-center px-2 py-1 rounded-lg bg-primary-400 flex-row gap-1">
+            <Text className="text-sm text-white font-medium">Ver todos</Text>
           </Pressable>
         </Link>
       </HStack>
 
       {creditors.length === 0 ? (
-        <VStack align="center" justify="center" style={styles.emptyContainer}>
-          <Text size="sm" color="textMuted" style={{ fontStyle: "italic" }}>
+        <VStack className="items-center justify-center p-4 bg-gray-100 rounded-lg border border-gray-300">
+          <Text className="text-sm text-gray-700 italic">
             No tienes acreedores registrados
           </Text>
         </VStack>
@@ -74,8 +60,8 @@ export default function SellersOverview() {
           horizontal
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          style={styles.slider}
-          contentContainerStyle={styles.body}
+          className="w-full"
+          contentContainerClassName="items-center py-2 gap-3"
         >
           {creditorsWithLargestDebt.map(
             ({
@@ -97,28 +83,3 @@ export default function SellersOverview() {
     </VStack>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw) =>
-  StyleSheet.create({
-    header: {
-      marginBottom: sp[2],
-    },
-    slider: {
-      width: "100%",
-    },
-    body: {
-      alignItems: "center",
-      paddingTop: sp[1],
-      paddingBottom: sp[1],
-      gap: sp[3],
-    },
-    emptyContainer: {
-      padding: sp[4],
-      backgroundColor: t.bgSubtle,
-      borderRadius: sp[2],
-      marginHorizontal: sp[1],
-      borderWidth: 1,
-      borderColor: t.border,
-    },
-  }),
-);

@@ -1,9 +1,8 @@
 import { Calendar } from "lucide-react-native";
-import React from "react";
-import { StyleSheet } from "react-native";
+import { Text } from "react-native";
 import Card from "@/components/Card";
-import { HStack, Text } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
+import { HStack } from "@/components/layout";
+
 import type { DebtWithCreditor } from "@/types";
 
 interface NextPayProps {
@@ -11,24 +10,16 @@ interface NextPayProps {
 }
 
 export default function NextPay({ debt }: NextPayProps) {
-  const styles = useStyles();
-
   if (!debt) {
     return (
-      <Card style={styles.card}>
-        <HStack align="center" gap="2" style={styles.top}>
+      <Card className="bg-primary-400 mt-2">
+        <HStack className="items-center gap-2 mb-1">
           <Calendar color="#ffffff" size={24} />
-          <Text size="sm" weight="medium" style={styles.textInverse}>
-            Próximo Pago
-          </Text>
+          <Text className="text-lg text-white font-medium">Próximo Pago</Text>
         </HStack>
-        <HStack justify="space-between" align="center">
-          <Text size="lg" weight="bold" style={styles.textInverse}>
-            Sin deudas
-          </Text>
-          <Text size="sm" weight="medium" style={styles.textInverse}>
-            Al día
-          </Text>
+        <HStack className="justify-between items-center">
+          <Text className="text-lg text-white font-bold">Sin deudas</Text>
+          <Text className="text-sm text-white font-medium">Al día</Text>
         </HStack>
       </Card>
     );
@@ -66,7 +57,7 @@ export default function NextPay({ debt }: NextPayProps) {
         "Dic",
       ];
       return `${baseDate.getDate()} de ${months[baseDate.getMonth()]}, ${baseDate.getFullYear()}`;
-    } catch (e) {
+    } catch (_) {
       return debt.debtDate;
     }
   };
@@ -76,36 +67,21 @@ export default function NextPay({ debt }: NextPayProps) {
   };
 
   return (
-    <Card style={styles.card}>
-      <HStack align="center" gap="2" style={styles.top}>
+    <Card className="bg-primary-400 mt-2">
+      <HStack className="items-center gap-2 mb-1">
         <Calendar color="#ffffff" size={24} />
-        <Text size="sm" weight="medium" style={styles.textInverse}>
+        <Text className="text-lg text-white font-medium">
           Próximo Pago: {debt.name}
         </Text>
       </HStack>
-      <HStack justify="space-between" align="center">
-        <Text size="lg" weight="bold" style={styles.textInverse}>
+      <HStack className="items-center justify-between">
+        <Text className="text-lg text-white font-bold">
           {formatCurrency(displayInstallment)}
         </Text>
-        <Text size="sm" weight="medium" style={styles.textInverse}>
+        <Text className="text-sm text-white font-medium">
           {getNextPayDate()}
         </Text>
       </HStack>
     </Card>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw) =>
-  StyleSheet.create({
-    card: {
-      backgroundColor: t.tertiaryHover,
-      marginTop: sp[2],
-    },
-    top: {
-      marginBottom: sp[1],
-    },
-    textInverse: {
-      color: t.textInverse,
-    },
-  }),
-);

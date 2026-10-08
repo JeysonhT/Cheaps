@@ -1,7 +1,7 @@
 import { Redirect } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native";
-import { Text, VStack } from "@/components/layout";
+import { ActivityIndicator, Text } from "react-native";
+import { VStack } from "@/components/layout";
 import Main from "@/components/StyledView";
 import useUserContext from "@/context/useUserContext";
 import WELCOME_COMPONENTS from "../constants/welcomeComponents";
@@ -37,8 +37,8 @@ export default function WelcomePage() {
   if (isLoading) {
     return (
       <Main>
-        <VStack gap="2" p="2" align="center" justify="center" flex={1}>
-          <Text size="md" weight="semibold" color="text" align="center">
+        <VStack className="gap-2 p-2 items-center justify-center flex-1">
+          <Text className="text-md font-semibold text-slate-900 text-center">
             Cargando...
           </Text>
           <ActivityIndicator color="#000" />
@@ -53,7 +53,7 @@ export default function WelcomePage() {
 
   return (
     <Main>
-      <VStack gap="2" p="2" align="center" justify="center" flex={1}>
+      <VStack className="gap-2 p-2 items-center justify-center flex-1">
         {!Component ? null : <Component handleNext={handleNext} />}
       </VStack>
     </Main>

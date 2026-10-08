@@ -1,21 +1,20 @@
 import { useAssets } from "expo-asset";
-import { ActivityIndicator, Image } from "react-native";
-import Button from "@/components/Button/Button";
-import { Text, VStack } from "@/components/layout";
+import { ActivityIndicator, Image, Text, View } from "react-native";
+import Button from "@/components/Button";
 import useUserContext from "@/context/useUserContext";
 import type { welcomeProps } from "../../types/user.types";
 
 export default function FinishScreen(_props: welcomeProps) {
   const { setInit } = useUserContext();
-  const [image, _] = useAssets([
+  const [image] = useAssets([
     require("../../../../assets/images/logotipo_cheaps.png"),
   ]);
 
   if (!image) {
     return (
-      <VStack align="center" justify="center" flex={1}>
-        <ActivityIndicator color="#000" />
-      </VStack>
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#064E3B" />
+      </View>
     );
   }
 
@@ -25,33 +24,34 @@ export default function FinishScreen(_props: welcomeProps) {
   };
 
   return (
-    <VStack flex={1} align="center" justify="center" p="2" gap="2">
-      <VStack flex={3} align="center" justify="center">
+    <View className="flex-1 items-center justify-center p-4 gap-2 w-full">
+      {/* Content section */}
+      <View className="flex-[3] items-center justify-center px-4">
         <Image
           source={{ uri: image[0].localUri ?? image[0].uri }}
           style={{ height: 200, width: 300 }}
+          resizeMode="contain"
         />
-        <Text
-          variant="highlight"
-          size="xl"
-          weight="bold"
-          color="text"
-          align="center"
-          my="4"
-        >
+        <Text className="text-2xl font-bold text-slate-900 text-center my-4">
           ¡Todo listo!
         </Text>
-        <Text size="md" weight="semibold" align="center">
+        <Text className="text-base font-semibold text-slate-800 text-center">
           Has completado la guía de inicio rápido.
         </Text>
-        <Text color="textMuted" align="center" my="4">
+        <Text className="text-sm text-slate-500 text-center my-4 leading-5">
           Ya puedes comenzar a registrar y dar seguimiento a tus cuentas sin
           ninguna fricción.
         </Text>
-      </VStack>
-      <VStack flex={1} justify="center" align="center">
-        <Button label="Comenzar" onPress={handleFinish} />
-      </VStack>
-    </VStack>
+      </View>
+
+      {/* Action button section */}
+      <View className="flex-1 justify-center items-center w-full px-6">
+        <Button
+          label="Comenzar"
+          onPress={handleFinish}
+          className="w-full max-w-xs"
+        />
+      </View>
+    </View>
   );
 }

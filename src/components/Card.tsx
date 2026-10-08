@@ -7,7 +7,7 @@ interface CardProps extends ViewProps {
 export default function Card({ style, className, ...props }: CardProps) {
   return (
     <View
-      className={`m-2 p-4 shadow-sm rounded-md ${className ?? ""}`}
+      className={`p-4 shadow-sm rounded-md ${className ?? ""}`}
       style={style}
       {...props}
     />
