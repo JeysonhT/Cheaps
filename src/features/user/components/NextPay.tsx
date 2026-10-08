@@ -14,7 +14,10 @@ export default function NextPay({ debt }: NextPayProps) {
     return (
       <Card className="bg-primary-400 mt-2">
         <HStack className="items-center gap-2 mb-1">
-          <Calendar color="#ffffff" size={24} />
+          <Calendar
+            color="#ffffff"
+            size={24}
+          />
           <Text className="text-lg text-white font-medium">Próximo Pago</Text>
         </HStack>
         <HStack className="justify-between items-center">
@@ -69,7 +72,10 @@ export default function NextPay({ debt }: NextPayProps) {
   return (
     <Card className="bg-primary-400 mt-2">
       <HStack className="items-center gap-2 mb-1">
-        <Calendar color="#ffffff" size={24} />
+        <Calendar
+          color="#ffffff"
+          size={24}
+        />
         <Text className="text-lg text-white font-medium">
           Próximo Pago: {debt.name}
         </Text>

@@ -12,13 +12,11 @@ import {
   ActivityIndicator,
   Pressable,
   ScrollView,
-  StyleSheet,
+  Text,
   View,
 } from "react-native";
 import Card from "@/components/Card";
-import { HStack, Text, VStack } from "@/components/layout";
 import Main from "@/components/StyledView";
-import { makeStyles } from "@/hooks/useTheme";
 import { formatDate } from "@/utils";
 import DebtDetailsCard from "./components/DebtDetailsCard";
 import NextPaymentCard from "./components/NextPaymentCard";
@@ -30,7 +28,6 @@ interface DebtDetailsProps {
 }
 
 export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
-  const styles = useStyles();
   const router = useRouter();
   const { debts, payments, fetchDebts, fetchPayments } = useDebts();
 
@@ -46,8 +43,11 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
 
   if (!debt) {
     return (
-      <Main style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={styles.loaderColor.color} />
+      <Main className="flex-1 justify-center items-center bg-slate-50">
+        <ActivityIndicator
+          size="large"
+          color="#064E3B"
+        />
       </Main>
     );
   }
@@ -70,7 +70,10 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
 
   // Formato de moneda
   const formatCurrency = (val: number) => {
-    return `C$ ${val.toLocaleString("es-NI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `C$ ${val.toLocaleString("es-NI", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   // Estimación de próxima fecha de pago
@@ -93,55 +96,56 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
   );
 
   return (
-    <Main style={styles.outerContainer}>
+    <Main className="flex-1 bg-slate-50">
       {/* Custom Header */}
-      <HStack align="center" justify="space-between" style={styles.header}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
+      <View className="h-14 px-3 bg-white border-b border-slate-200 flex-row items-center justify-between">
+        <Pressable
+          onPress={() => router.back()}
+          className="p-2 rounded-full active:bg-slate-100"
+        >
           <ArrowLeft
             size={24}
-            color={styles.iconColor.color}
+            color="#0f172a"
           />
         </Pressable>
-        <Text size="lg" weight="bold" color="primary">
+        <Text className="text-lg font-bold text-primary">
           Detalles de la Deuda
         </Text>
-        <View style={styles.helpButton}>
+        <View className="p-2 opacity-80">
           <Settings
             size={24}
-            color={styles.iconMutedColor.color}
+            color="#94a3b8"
           />
         </View>
-      </HStack>
+      </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView contentContainerClassName="p-4 pb-8">
         {/* Debt Name Section */}
-        <VStack style={styles.debtHeaderSection}>
-          <Text
-            size="xs"
-            color="secondary"
-            weight="semibold"
-            style={styles.debtCategoryText}
-          >
+        <View className="mb-4">
+          <Text className="text-xs font-semibold uppercase tracking-wider text-blue-600">
             {`Detalles de ${debt.type}`}
           </Text>
-          <Text size="2xl" weight="bold" color="text" mt="1">
+          <Text className="text-2xl font-bold text-slate-900 mt-1">
             {debt.name}
           </Text>
-          <HStack align="center" gap="2" style={styles.creditorRow}>
-            <View style={styles.creditorIconBg}>
+          <View className="flex-row items-center gap-2 mt-2">
+            <View className="w-6 h-6 rounded-full bg-slate-200 items-center justify-center">
               <Building2
-                size={16}
-                color={styles.iconColor.color}
+                size={14}
+                color="#0f172a"
               />
             </View>
-            <Text size="base" weight="medium" color="textMuted">
+            <Text className="text-base font-medium text-slate-500">
               {debt.creditor ? debt.creditor.name : "Sin acreedor asignado"}
             </Text>
-          </HStack>
-        </VStack>
+          </View>
+        </View>
 
         {/* Financial Summary Bento Card */}
-        <DebtDetailsCard original={original} current={current} />
+        <DebtDetailsCard
+          original={original}
+          current={current}
+        />
 
         {/* Next Payment Card */}
         <NextPaymentCard
@@ -152,120 +156,94 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
         />
 
         {/* Technical Details Card */}
-        <Card style={styles.technicalCard}>
-          <HStack align="center" gap="2" style={styles.techCardTitle}>
+        <Card className="bg-white rounded-xl p-4 border border-slate-200 mb-4 shadow-sm">
+          <View className="flex-row items-center gap-2 mb-3">
             <Info
               size={20}
-              color={styles.iconColor.color}
+              color="#0f172a"
             />
-            <Text size="base" weight="bold" color="text">
+            <Text className="text-base font-bold text-slate-900">
               Detalles Técnicos
             </Text>
-          </HStack>
-          <VStack>
-            <HStack
-              justify="space-between"
-              align="center"
-              style={styles.techRow}
-            >
-              <Text size="sm" color="textMuted">
-                Frecuencia
-              </Text>
-              <Text size="sm" weight="semibold" color="text">
+          </View>
+          <View>
+            <View className="flex-row justify-between items-center py-2 border-b border-slate-100">
+              <Text className="text-sm text-slate-400">Frecuencia</Text>
+              <Text className="text-sm font-semibold text-slate-900">
                 {getFrequencyText(debt.payFrecuency)}
               </Text>
-            </HStack>
-            <HStack
-              justify="space-between"
-              align="center"
-              style={styles.techRow}
-            >
-              <Text size="sm" color="textMuted">
-                Fecha Inicio
-              </Text>
-              <Text size="sm" weight="semibold" color="text">
+            </View>
+            <View className="flex-row justify-between items-center py-2 border-b border-slate-100">
+              <Text className="text-sm text-slate-400">Fecha Inicio</Text>
+              <Text className="text-sm font-semibold text-slate-900">
                 {formatDate(debt.debtDate)}
               </Text>
-            </HStack>
-            <HStack
-              justify="space-between"
-              align="center"
-              style={[styles.techRow, styles.noBorder]}
-            >
-              <Text size="sm" color="textMuted">
-                Tipo
-              </Text>
-              <Text
-                size="sm"
-                weight="semibold"
-                color="text"
-                style={{ textTransform: "capitalize" }}
-              >
+            </View>
+            <View className="flex-row justify-between items-center py-2">
+              <Text className="text-sm text-slate-400">Tipo</Text>
+              <Text className="text-sm font-semibold text-slate-900 capitalize">
                 {debt.type}
               </Text>
-            </HStack>
-          </VStack>
+            </View>
+          </View>
         </Card>
 
         {/* Recent Payment History Card */}
-        <Card style={styles.technicalCard}>
-          <HStack justify="space-between" align="center">
-            <HStack align="center" gap="2" style={styles.techCardTitle}>
-              <History
-                size={20}
-                color={styles.iconColor.color}
-              />
-              <Text size="base" weight="bold" color="text">
-                Historial Reciente
-              </Text>
-            </HStack>
-          </HStack>
+        <Card className="bg-white rounded-xl p-4 border border-slate-200 mb-4 shadow-sm">
+          <View className="flex-row items-center gap-2 mb-3">
+            <History
+              size={20}
+              color="#0f172a"
+            />
+            <Text className="text-base font-bold text-slate-900">
+              Historial Reciente
+            </Text>
+          </View>
 
           {debtPayments.length === 0 ? (
-            <VStack align="center" style={styles.emptyHistoryContainer}>
-              <Text size="sm" color="textMuted" style={{ fontStyle: "italic" }}>
+            <View className="py-4 items-center">
+              <Text className="text-sm text-slate-400 italic">
                 No se han registrado pagos aún.
               </Text>
-            </VStack>
+            </View>
           ) : (
-            <VStack style={styles.tableContainer}>
-              <HStack style={styles.tableHeader}>
-                <Text size="xs" weight="bold" color="textMuted" flex={1}>
+            <View className="mt-1">
+              <View className="flex-row border-b border-slate-200 pb-2 mb-2">
+                <Text className="text-xs font-bold text-slate-400 flex-1">
                   FECHA
                 </Text>
-                <Text size="xs" weight="bold" color="textMuted" flex={1}>
+                <Text className="text-xs font-bold text-slate-400 flex-1">
                   MONTO
                 </Text>
-                <Text
-                  size="xs"
-                  weight="bold"
-                  color="textMuted"
-                  flex={1}
-                  align="right"
-                >
+                <Text className="text-xs font-bold text-slate-400 flex-1 text-right">
                   ESTADO
                 </Text>
-              </HStack>
+              </View>
               {debtPayments.slice(0, 5).map((pay) => (
-                <HStack key={pay.id} align="center" style={styles.tableRow}>
-                  <Text size="xs" color="text" flex={1}>
+                <View
+                  key={pay.id}
+                  className="flex-row items-center py-3 border-b border-slate-100"
+                >
+                  <Text className="text-xs text-slate-900 flex-1">
                     {formatDate(pay.payDate)}
                   </Text>
-                  <Text size="sm" weight="bold" color="text" flex={1}>
+                  <Text className="text-sm font-bold text-slate-900 flex-1">
                     {formatCurrency(pay.amount)}
                   </Text>
-                  <HStack align="center" gap="1" style={styles.statusBadge}>
-                    <CheckCircle2
-                      size={12}
-                      color="#047857"
-                    />
-                    <Text weight="bold" style={styles.statusBadgeText}>
-                      Completado
-                    </Text>
-                  </HStack>
-                </HStack>
+                  <View className="flex-1 items-end">
+                    <View className="bg-emerald-100 px-2 py-0.5 rounded-full flex-row items-center gap-1">
+                      <CheckCircle2
+                        size={12}
+                        color="#047857"
+                      />
+                      <Text className="text-[10px] font-bold text-emerald-700">
+                        Completado
+                      </Text>
+                    </View>
+                  </View>
+                </View>
               ))}
-            </VStack>
+            </View>
           )}
         </Card>
       </ScrollView>
@@ -281,111 +259,3 @@ export default function DebtDetailsScreen({ id }: DebtDetailsProps) {
     </Main>
   );
 }
-
-const useStyles = makeStyles((t, sp, _fs, _fw, r) =>
-  StyleSheet.create({
-    outerContainer: {
-      flex: 1,
-      backgroundColor: t.bgSubtle,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: t.bgSubtle,
-    },
-    loaderColor: {
-      color: t.primary,
-    },
-    header: {
-      height: 60,
-      paddingHorizontal: sp[3],
-      backgroundColor: t.bgElevated,
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    backButton: {
-      padding: sp[2],
-      borderRadius: r.full,
-    },
-    helpButton: {
-      padding: sp[2],
-      opacity: 0.8,
-    },
-    iconColor: {
-      color: t.text,
-    },
-    iconMutedColor: {
-      color: t.textMuted,
-    },
-    scrollContent: {
-      padding: sp[4],
-      paddingBottom: sp[8],
-    },
-    debtHeaderSection: {
-      marginBottom: sp[4],
-    },
-    debtCategoryText: {
-      textTransform: "uppercase",
-      letterSpacing: 0.8,
-    },
-    creditorRow: {
-      marginTop: sp[2],
-    },
-    creditorIconBg: {
-      width: 24,
-      height: 24,
-      borderRadius: r.full,
-      backgroundColor: t.bgMuted,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    technicalCard: {
-      backgroundColor: t.bgElevated,
-      borderRadius: r.lg,
-      padding: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-      marginBottom: sp[4],
-    },
-    techCardTitle: {
-      marginBottom: sp[3],
-    },
-    techRow: {
-      paddingVertical: sp[2],
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    noBorder: {
-      borderBottomWidth: 0,
-      paddingBottom: 0,
-    },
-    emptyHistoryContainer: {
-      paddingVertical: sp[4],
-    },
-    tableContainer: {
-      marginTop: sp[1],
-    },
-    tableHeader: {
-      borderBottomWidth: 1,
-      borderBottomColor: t.borderStrong,
-      paddingBottom: sp[2],
-      marginBottom: sp[2],
-    },
-    tableRow: {
-      paddingVertical: sp[3],
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    statusBadge: {
-      backgroundColor: "#d1fae5", // soft emerald background
-      paddingHorizontal: sp[2],
-      paddingVertical: sp[1],
-      borderRadius: r.full,
-    },
-    statusBadgeText: {
-      fontSize: 10,
-      color: "#047857",
-    },
-  }),
-);

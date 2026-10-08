@@ -15,7 +15,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Inicio",
           tabBarIcon: ({ color }) => (
-            <Home color={color} size={iconSize} />
+            <Home
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -24,7 +27,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Deudas",
           tabBarIcon: ({ color }) => (
-            <Receipt color={color} size={iconSize} />
+            <Receipt
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -33,7 +39,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Historial",
           tabBarIcon: ({ color }) => (
-            <ReceiptText color={color} size={iconSize} />
+            <ReceiptText
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />

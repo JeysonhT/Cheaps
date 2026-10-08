@@ -1,13 +1,10 @@
 import { ReceiptText } from "lucide-react-native";
 import { useEffect } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
-import { Text, VStack } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import HistoryElement from "./components/HistoryElement";
 import { useHistory } from "./hooks/useHistory";
 
 export default function HistoryDashboard() {
-  const styles = useStyles();
   const { payments, isLoading, fetchHistory } = useHistory();
 
   useEffect(() => {
@@ -21,66 +18,64 @@ export default function HistoryDashboard() {
   };
 
   const renderHeader = () => (
-    <VStack style={styles.header}>
+    <View className="pt-4 pb-2">
       {/* Resumen Card */}
-      <VStack style={styles.summaryCard}>
-        <Text size="xs" weight="semibold" style={styles.summaryLabel}>
+      <View className="bg-primary rounded-2xl p-4 mx-4 mb-4 shadow-sm">
+        <Text className="text-xs font-semibold text-[#85f8c4] uppercase tracking-wider">
           Total Abonado al Historial
         </Text>
-        <Text size="2xl" weight="bold" mt="1" style={styles.summaryAmount}>
+        <Text className="text-2xl font-bold text-white mt-1">
           {formatCurrency(totalPayments)}
         </Text>
-        <Text size="xs" mt="2" style={styles.summarySubtext}>
+        <Text className="text-xs text-white/80 italic mt-2">
           {`Has registrado un total de ${payments.length} abonos.`}
         </Text>
-      </VStack>
-      <Text size="lg" weight="bold" color="text" mx="4" mt="2">
+      </View>
+      <Text className="text-lg font-bold text-slate-900 mx-4 mt-2">
         Historial de Transacciones
       </Text>
-    </VStack>
+    </View>
   );
 
   const renderEmpty = () => (
-    <VStack align="center" justify="center" style={styles.emptyContainer}>
-      <View style={styles.emptyIconContainer}>
+    <View className="items-center justify-center px-8 mt-20">
+      <View className="w-20 h-20 rounded-full bg-white items-center justify-center mb-4 border border-slate-200">
         <ReceiptText
-          size={24}
-          color={styles.emptyIconColor.color}
+          size={36}
+          color="#94a3b8"
         />
       </View>
-      <Text size="lg" weight="bold" color="text" align="center" mb="2">
+      <Text className="text-lg font-bold text-slate-900 text-center mb-2">
         No hay transacciones registradas
       </Text>
-      <Text
-        size="base"
-        color="textMuted"
-        align="center"
-        style={styles.emptyText}
-      >
+      <Text className="text-base text-slate-400 text-center leading-6">
         Tus abonos registrados a deudas aparecerán listados aquí para llevar un
         control estricto.
       </Text>
-    </VStack>
+    </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-slate-50">
       {isLoading && payments.length === 0 ? (
-        <VStack flex={1} justify="center" align="center">
-          <ActivityIndicator size="large" color={styles.loaderColor.color} />
-        </VStack>
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
+        </View>
       ) : (
         <FlatList
           data={payments}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.elementWrapper}>
+            <View className="bg-white mx-4 my-1 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
               <HistoryElement payment={item} />
             </View>
           )}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
-          contentContainerStyle={styles.listContent}
+          contentContainerClassName="pb-6"
           onRefresh={fetchHistory}
           refreshing={isLoading}
         />
@@ -88,76 +83,3 @@ export default function HistoryDashboard() {
     </View>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: t.bgSubtle,
-    },
-    header: {
-      paddingTop: sp[4],
-      paddingBottom: sp[2],
-    },
-    summaryCard: {
-      backgroundColor: t.primary,
-      borderRadius: r.lg,
-      padding: sp[4],
-      marginHorizontal: sp[4],
-      marginBottom: sp[4],
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-    },
-    summaryLabel: {
-      color: "#85f8c4", // Light green tint
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-    },
-    summaryAmount: {
-      color: "#ffffff",
-    },
-    summarySubtext: {
-      color: "rgba(255, 255, 255, 0.8)",
-      fontStyle: "italic",
-    },
-    listContent: {
-      paddingBottom: sp[6],
-    },
-    elementWrapper: {
-      backgroundColor: t.bgElevated,
-      marginHorizontal: sp[4],
-      borderRadius: r.md,
-      overflow: "hidden",
-      borderWidth: 1,
-      borderColor: t.border,
-      marginVertical: sp[1],
-    },
-    loaderColor: {
-      color: t.primary,
-    },
-    emptyContainer: {
-      marginTop: 80,
-    },
-    emptyIconContainer: {
-      width: 80,
-      height: 80,
-      paddingHorizontal: 6,
-      borderRadius: r.full,
-      backgroundColor: t.bgElevated,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-    },
-    emptyIconColor: {
-      color: t.textMuted,
-    },
-    emptyText: {
-      lineHeight: 22,
-    },
-  }),
-);

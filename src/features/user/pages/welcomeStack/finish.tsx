@@ -13,7 +13,10 @@ export default function FinishScreen(_props: welcomeProps) {
   if (!image) {
     return (
       <View className="flex-1 items-center justify-center">
-        <ActivityIndicator size="large" color="#064E3B" />
+        <ActivityIndicator
+          size="large"
+          color="#064E3B"
+        />
       </View>
     );
   }

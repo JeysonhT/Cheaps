@@ -20,7 +20,10 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color }) => (
-            <LayoutDashboard color={color} size={iconSize} />
+            <LayoutDashboard
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -29,7 +32,10 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Historial",
           tabBarIcon: ({ color }) => (
-            <ReceiptText color={color} size={iconSize} />
+            <ReceiptText
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -38,7 +44,10 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Terminal",
           tabBarIcon: ({ color }) => (
-            <CreditCard color={color} size={iconSize} />
+            <CreditCard
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -47,7 +56,10 @@ export default function SellerTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Sync",
           tabBarIcon: ({ color }) => (
-            <RefreshCw color={color} size={iconSize} />
+            <RefreshCw
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />

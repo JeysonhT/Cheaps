@@ -8,12 +8,10 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
+  Text,
   TextInput,
   View,
 } from "react-native";
-import { HStack, Text, VStack } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
 import { useDebts } from "../hooks/useDebts";
 
 interface PaymentModalProps {
@@ -31,7 +29,6 @@ export default function PaymentModal({
   currentAmount,
   suggestedAmount,
 }: PaymentModalProps) {
-  const styles = useStyles();
   const { addPayment } = useDebts();
 
   const [payAmount, setPayAmount] = useState("");
@@ -99,126 +96,105 @@ export default function PaymentModal({
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.modalOverlay}
+        className="flex-1 bg-black/50 justify-center items-center p-4"
       >
-        <View style={styles.modalContent}>
-          <HStack
-            justify="space-between"
-            align="center"
-            style={styles.modalHeader}
-          >
-            <Text size="lg" weight="bold" color="text">
+        <View className="bg-white rounded-2xl w-full max-w-[360px] max-h-[85%] shadow-xl android:elevation-md overflow-hidden">
+          <View className="p-4 border-b border-slate-200 flex-row justify-between items-center">
+            <Text className="text-lg font-bold text-slate-900">
               Registrar Pago
             </Text>
-            <Pressable onPress={onClose}>
+            <Pressable
+              onPress={onClose}
+              className="p-1 rounded-full active:bg-slate-100"
+            >
               <X
                 size={24}
-                color={styles.iconColor.color}
+                color="#0f172a"
               />
             </Pressable>
-          </HStack>
+          </View>
 
           <ScrollView
-            style={styles.modalScrollView}
-            contentContainerStyle={styles.modalBody}
+            className="shrink"
+            contentContainerClassName="p-4"
+            keyboardShouldPersistTaps="handled"
           >
-            <Text size="sm" color="textMuted" mb="2">
+            <Text className="text-sm text-slate-500 mb-3">
               Registra un abono para reducir el saldo pendiente de tu deuda.
             </Text>
 
             {/* Field: Amount */}
-            <VStack gap="1">
-              <Text
-                size="xs"
-                weight="bold"
-                color="primary"
-                style={styles.modalInputLabel}
-              >
+            <View className="gap-1">
+              <Text className="text-xs font-bold uppercase tracking-wider text-primary">
                 Monto del Pago
               </Text>
-              <HStack align="center" style={styles.modalInputWrapper}>
-                <Text weight="bold" color="textMuted" mr="2">
-                  C$
-                </Text>
+              <View className="flex-row items-center bg-slate-50 border border-slate-300 rounded-lg px-3 h-12">
+                <Text className="font-bold text-slate-400 mr-2">C$</Text>
                 <TextInput
                   value={payAmount}
                   onChangeText={setPayAmount}
                   placeholder="0.00"
-                  placeholderTextColor={styles.placeholderColor.color}
+                  placeholderTextColor="#94a3b8"
                   keyboardType="numeric"
-                  style={styles.modalTextInput}
+                  className="flex-1 text-base text-slate-900 h-full"
                 />
-              </HStack>
-            </VStack>
+              </View>
+            </View>
 
             {/* Field: Reference */}
-            <VStack gap="1" style={styles.modalInputSpacing}>
-              <Text
-                size="xs"
-                weight="bold"
-                color="primary"
-                style={styles.modalInputLabel}
-              >
+            <View className="gap-1 mt-4">
+              <Text className="text-xs font-bold uppercase tracking-wider text-primary">
                 Referencia / Nota
               </Text>
-              <HStack align="center" style={styles.modalInputWrapper}>
+              <View className="flex-row items-center bg-slate-50 border border-slate-300 rounded-lg px-3 h-12">
                 <TextInput
                   value={payReference}
                   onChangeText={setPayReference}
                   placeholder="Ej. Transferencia Bancaria, Pago en Sucursal"
-                  placeholderTextColor={styles.placeholderColor.color}
+                  placeholderTextColor="#94a3b8"
                   numberOfLines={2}
-                  style={styles.modalTextInput}
+                  className="flex-1 text-base text-slate-900 h-full"
                 />
-              </HStack>
-            </VStack>
+              </View>
+            </View>
 
             {/* Field: Date */}
-            <VStack gap="1" style={styles.modalInputSpacing}>
-              <Text
-                size="xs"
-                weight="bold"
-                color="primary"
-                style={styles.modalInputLabel}
-              >
+            <View className="gap-1 mt-4">
+              <Text className="text-xs font-bold uppercase tracking-wider text-primary">
                 Fecha del Pago
               </Text>
-              <HStack align="center" style={styles.modalInputWrapper}>
+              <View className="flex-row items-center bg-slate-50 border border-slate-300 rounded-lg px-3 h-12">
                 <TextInput
                   value={payDate}
                   onChangeText={setPayDate}
                   placeholder="AAAA-MM-DD"
-                  placeholderTextColor={styles.placeholderColor.color}
-                  style={styles.modalTextInput}
+                  placeholderTextColor="#94a3b8"
+                  className="flex-1 text-base text-slate-900 h-full"
                 />
-              </HStack>
-            </VStack>
+              </View>
+            </View>
 
             <Pressable
-              style={({ pressed }) => [
-                styles.modalSubmitBtn,
-                pressed && styles.modalSubmitBtnPressed,
-                isSubmittingPay && styles.modalSubmitBtnDisabled,
-              ]}
+              className="bg-primary h-12 items-center justify-center rounded-lg mt-5 flex-row gap-2 active:opacity-90 disabled:opacity-60"
               onPress={handleRegisterPayment}
               disabled={isSubmittingPay}
             >
-              <HStack align="center" justify="center" gap="2">
-                {isSubmittingPay ? (
-                  <ActivityIndicator size="small" color="#ffffff" />
-                ) : (
-                  <>
-                    <Save size={20} color="#ffffff" />
-                    <Text
-                      size="base"
-                      weight="bold"
-                      style={styles.modalSubmitBtnText}
-                    >
-                      Guardar Pago
-                    </Text>
-                  </>
-                )}
-              </HStack>
+              {isSubmittingPay ? (
+                <ActivityIndicator
+                  size="small"
+                  color="#ffffff"
+                />
+              ) : (
+                <>
+                  <Save
+                    size={20}
+                    color="#ffffff"
+                  />
+                  <Text className="text-base font-bold text-white">
+                    Guardar Pago
+                  </Text>
+                </>
+              )}
             </Pressable>
           </ScrollView>
         </View>
@@ -226,83 +202,3 @@ export default function PaymentModal({
     </Modal>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, _fw, r) =>
-  StyleSheet.create({
-    modalOverlay: {
-      flex: 1,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: sp[4],
-    },
-    modalContent: {
-      backgroundColor: t.bgElevated,
-      borderRadius: r.lg,
-      width: "100%",
-      maxWidth: 360,
-      maxHeight: "85%",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 10,
-      elevation: 5,
-    },
-    modalHeader: {
-      padding: sp[4],
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    modalScrollView: {
-      flexShrink: 1,
-    },
-    modalBody: {
-      padding: sp[4],
-    },
-    modalInputLabel: {
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-    },
-    modalInputWrapper: {
-      backgroundColor: t.bg,
-      borderWidth: 1,
-      borderColor: t.borderStrong,
-      borderRadius: r.md,
-      paddingHorizontal: sp[3],
-      height: 48,
-    },
-    modalTextInput: {
-      flex: 1,
-      fontSize: fs.base,
-      color: t.text,
-      height: "100%",
-    },
-    modalSubmitBtn: {
-      backgroundColor: t.primary,
-      height: 50,
-      alignItems: "center",
-      padding: 12,
-      borderRadius: r.md,
-      marginTop: sp[4],
-    },
-    modalSubmitBtnPressed: {
-      opacity: 0.9,
-      transform: [{ scale: 0.98 }],
-    },
-    modalSubmitBtnDisabled: {
-      opacity: 0.6,
-    },
-    modalSubmitBtnText: {
-      color: "#ffffff",
-    },
-    iconColor: {
-      color: t.text,
-    },
-    placeholderColor: {
-      color: t.textMuted,
-    },
-    modalInputSpacing: {
-      marginTop: sp[4],
-    },
-  }),
-);

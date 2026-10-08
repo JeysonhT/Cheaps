@@ -8,7 +8,11 @@ import {
 } from "react-native";
 
 export type ButtonVariant =
-  "primary" | "secondary" | "inverted" | "outlined" | "danger";
+  | "primary"
+  | "secondary"
+  | "inverted"
+  | "outlined"
+  | "danger";
 
 export type ButtonProps = {
   label: string;
@@ -77,7 +81,12 @@ export default function Button({
         <ActivityIndicator color={config.iconColor} />
       ) : (
         <View className="flex-row items-center justify-center gap-1">
-          {Icon ? <Icon size={20} color={config.iconColor} /> : null}
+          {Icon ? (
+            <Icon
+              size={20}
+              color={config.iconColor}
+            />
+          ) : null}
           <Text
             className={`text-[15px] font-medium ${config.text} ${labelClassName ?? ""}`}
           >

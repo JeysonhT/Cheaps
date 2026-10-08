@@ -14,5 +14,10 @@ export default function TabLayout() {
     },
   };
 
-  return <ClientTabs options={tabsOptions} iconSize={24} />;
+  return (
+    <ClientTabs
+      options={tabsOptions}
+      iconSize={24}
+    />
+  );
 }

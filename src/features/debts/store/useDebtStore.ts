@@ -1,11 +1,11 @@
+import { create } from "zustand";
 import { userService } from "@/services/userService";
-import {
+import type {
   CreateDebtDTO,
   CreatePayDebtDTO,
   DebtWithCreditor,
   PayDebt,
 } from "@/types";
-import { create } from "zustand";
 import { debtService } from "../services/debtService";
 import { paymentService } from "../services/paymentService";
 

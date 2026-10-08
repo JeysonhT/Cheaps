@@ -6,7 +6,6 @@ import {
   Alert,
   FlatList,
   Pressable,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
@@ -60,7 +59,10 @@ export default function SellerDashboard() {
   const renderEmpty = () => (
     <VStack className="align-center justify-center px-8 mt-20">
       <View className="w-20 h-20 rounded-full bg-slate-50 items-center justify-center mb-4">
-        <Building2 size={48} color={Styles.emptyIconColor.color} />
+        <Building2
+          size={48}
+          color="#94a3b8"
+        />
       </View>
       <Text className="text-lg font-bold text-center mb-2">
         No hay acreedores registrados
@@ -76,7 +78,10 @@ export default function SellerDashboard() {
     <VStack className="flex-1 bg-white">
       {isLoading && creditors.length === 0 ? (
         <VStack className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color={Styles.loaderColor.color} />
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
         </VStack>
       ) : (
         <FlatList
@@ -102,18 +107,12 @@ export default function SellerDashboard() {
         className="absolute bottom-6 right-4 bg-primary flex-row items-center px-4 py-3 rounded-full gap-2 android:elevation-md ios:shadow-black ios:shadow-opacity-25 ios:shadow-offset-[0,4] ios:shadow-radius-4"
         onPress={() => router.push("/(tabs)/debts/addCreditor")}
       >
-        <Plus size={24} color="#ffffff" />
+        <Plus
+          size={24}
+          color="#ffffff"
+        />
         <Text className="text-white font-bold">Agregar Acreedor</Text>
       </Pressable>
     </VStack>
   );
 }
-
-const Styles = StyleSheet.create({
-  loaderColor: {
-    color: "#064E3B",
-  },
-  emptyIconColor: {
-    color: "#94a3b8",
-  },
-});

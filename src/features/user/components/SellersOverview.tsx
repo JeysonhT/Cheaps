@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { useEffect } from "react";
-import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
+import { Pressable, ScrollView, Text } from "react-native";
 import { HStack, VStack } from "@/components/layout";
 import { useDebts } from "@/features/debts/hooks/useDebts";
 import { useCreditors } from "@/features/seller/hooks/useCreditors";
@@ -41,7 +41,10 @@ export default function SellersOverview() {
     <VStack className="p-2">
       <HStack className="justify-between items-center mb-2">
         <Text className="text-xl font-bold text-gray-900">Mis acreedores</Text>
-        <Link href={"/(tabs)/debts/sellers"} asChild>
+        <Link
+          href={"/(tabs)/debts/sellers"}
+          asChild
+        >
           <Pressable className="items-center px-2 py-1 rounded-lg bg-primary-400 flex-row gap-1">
             <Text className="text-sm text-white font-medium">Ver todos</Text>
           </Pressable>

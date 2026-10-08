@@ -92,17 +92,26 @@ export default function AddCreditorScreen() {
             onPress={() => router.back()}
             className="p-2 rounded-full active:opacity-70"
           >
-            <ArrowLeft size={24} color="#0f172a" />
+            <ArrowLeft
+              size={24}
+              color="#0f172a"
+            />
           </Pressable>
           <Text className="text-lg font-bold text-primary">
             {isEditing ? "Editar Acreedor" : "Agregar Acreedor"}
           </Text>
           <View className="p-2 opacity-80">
-            <CircleHelp size={24} color="#94a3b8" />
+            <CircleHelp
+              size={24}
+              color="#94a3b8"
+            />
           </View>
         </View>
 
-        <ScrollView className="flex-1" contentContainerClassName="p-4 pb-8">
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="p-4 pb-8"
+        >
           {/* Title Section */}
           <View className="mb-6">
             <Text className="text-xl font-bold text-primary mb-1">
@@ -192,7 +201,11 @@ export default function AddCreditorScreen() {
 
             {/* Informational Note */}
             <View className="bg-slate-50 rounded-lg p-3 mt-2 gap-2 flex-row">
-              <Info size={20} color="#2563EB" className="mt-0.5" />
+              <Info
+                size={20}
+                color="#2563EB"
+                className="mt-0.5"
+              />
               <Text className="flex-1 text-xs text-slate-500 italic leading-[18px]">
                 Al guardar este acreedor, podrá comenzar a registrar
                 transacciones, pagos programados y estados de cuenta vinculados

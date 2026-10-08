@@ -6,17 +6,14 @@ import {
   Alert,
   FlatList,
   Pressable,
-  StyleSheet,
+  Text,
   View,
 } from "react-native";
-import Button from "@/components/Button/Button";
-import { HStack, Text, VStack } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
+import Button from "@/components/Button";
 import DebtCard from "./components/DebtCard";
 import { useDebts } from "./hooks/useDebts";
 
 export default function DebtsDashboard() {
-  const styles = useStyles();
   const router = useRouter();
   const { debts, isLoading, fetchDebts, deleteDebt } = useDebts();
 
@@ -49,7 +46,10 @@ export default function DebtsDashboard() {
     totalOriginal > 0 ? (totalPaid / totalOriginal) * 100 : 0;
 
   const formatCurrency = (val: number) => {
-    return `C$ ${val.toLocaleString("es-NI", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `C$ ${val.toLocaleString("es-NI", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
   };
 
   const handleClickCreditors = () => {
@@ -57,88 +57,87 @@ export default function DebtsDashboard() {
   };
 
   const renderHeader = () => (
-    <VStack style={styles.header}>
+    <View className="pt-4 pb-2">
       {/* Resumen Card */}
-      <VStack style={styles.summaryCard}>
-        <Text size="xs" weight="semibold" style={styles.summaryLabel}>
+      <View className="bg-primary rounded-2xl p-4 mx-4 mb-4 shadow-sm android:elevation-sm">
+        <Text className="text-xs font-semibold uppercase tracking-wider text-emerald-200">
           Deuda total pendiente
         </Text>
-        <Text size="3xl" weight="bold" mt="1" style={styles.summaryAmount}>
+        <Text className="text-3xl font-bold text-white mt-1">
           {formatCurrency(totalPending)}
         </Text>
 
         {totalOriginal > 0 && (
-          <VStack style={styles.progressContainer}>
-            <HStack justify="space-between" style={styles.progressTextRow}>
-              <Text size="xs" weight="medium" style={styles.progressText}>
+          <View className="mt-3 pt-3 border-t border-white/20">
+            <View className="flex-row justify-between mb-1">
+              <Text className="text-xs font-medium text-white">
                 Liquidado: {formatCurrency(totalPaid)} (
                 {Math.round(averageProgress)}%)
               </Text>
-            </HStack>
-            <View style={styles.progressTrack}>
+            </View>
+            <View className="h-2 bg-white/20 rounded-full overflow-hidden mt-1">
               <View
-                style={[styles.progressFill, { width: `${averageProgress}%` }]}
+                className="h-full bg-emerald-400 rounded-full"
+                style={{ width: `${averageProgress}%` }}
               />
             </View>
-          </VStack>
+          </View>
         )}
-      </VStack>
+      </View>
 
-      <Text size="lg" weight="bold" color="text" mx="4" mt="2">
-        Desglose de Deudas
-      </Text>
-      {/**
-       * Esta sección permite ver a los acreedores
-       */}
-      <HStack justify="flex-end" p="2">
+      <View className="flex-row items-center justify-between px-4 mt-2 mb-1">
+        <Text className="text-lg font-bold text-slate-900">
+          Desglose de Deudas
+        </Text>
         <Button
           label="Acreedores"
           icon={User}
           onPress={handleClickCreditors}
         />
-      </HStack>
-    </VStack>
+      </View>
+    </View>
   );
 
   const renderEmpty = () => (
-    <VStack align="center" justify="center" style={styles.emptyContainer}>
-      <View style={styles.emptyIconContainer}>
+    <View className="items-center justify-center px-8 mt-20">
+      <View className="w-20 h-20 rounded-full bg-white items-center justify-center mb-4 border border-slate-200">
         <CreditCard
-          size={48}
-          color={styles.emptyIconColor.color}
+          size={40}
+          color="#94a3b8"
         />
       </View>
-      <Text size="lg" weight="bold" color="text" align="center" mb="2">
+      <Text className="text-lg font-bold text-slate-900 text-center mb-2">
         Sin deudas registradas
       </Text>
-      <Text
-        size="base"
-        color="textMuted"
-        align="center"
-        style={styles.emptyText}
-      >
+      <Text className="text-base text-slate-400 text-center leading-6">
         Añade tus compromisos financieros para realizar un seguimiento óptimo de
         tus finanzas.
       </Text>
-    </VStack>
+    </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-slate-50">
       {isLoading && debts.length === 0 ? (
-        <VStack flex={1} justify="center" align="center">
-          <ActivityIndicator size="large" color={styles.loaderColor.color} />
-        </VStack>
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
+        </View>
       ) : (
         <FlatList
           data={debts}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <DebtCard debt={item} onDelete={handleDelete} />
+            <DebtCard
+              debt={item}
+              onDelete={handleDelete}
+            />
           )}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
-          contentContainerStyle={styles.listContent}
+          contentContainerClassName="pb-24"
           onRefresh={fetchDebts}
           refreshing={isLoading}
         />
@@ -146,118 +145,15 @@ export default function DebtsDashboard() {
 
       {/* FAB Largo */}
       <Pressable
-        style={styles.fab}
+        className="absolute bottom-6 right-4 bg-primary flex-row items-center px-4 py-3 rounded-full gap-2 shadow-lg android:elevation-md active:opacity-90"
         onPress={() => router.push("/(tabs)/debts/add")}
       >
-        <Plus size={24} color="#ffffff" />
-        <Text size="base" weight="bold" style={styles.fabText}>
-          Agregar Deuda
-        </Text>
+        <Plus
+          size={24}
+          color="#ffffff"
+        />
+        <Text className="text-base font-bold text-white">Agregar Deuda</Text>
       </Pressable>
     </View>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: t.bgSubtle,
-    },
-    header: {
-      paddingTop: sp[4],
-      paddingBottom: sp[2],
-    },
-    summaryCard: {
-      backgroundColor: t.primary,
-      borderRadius: r.lg,
-      padding: sp[4],
-      marginHorizontal: sp[4],
-      marginBottom: sp[4],
-      elevation: 3,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-    },
-    summaryLabel: {
-      color: "#a7f3d0", // Light green tint text
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-    },
-    summaryAmount: {
-      color: "#ffffff",
-    },
-    progressContainer: {
-      marginTop: sp[3],
-      borderTopWidth: 1,
-      borderTopColor: "rgba(255, 255, 255, 0.15)",
-      paddingTop: sp[3],
-    },
-    progressTextRow: {
-      marginBottom: sp[1],
-    },
-    progressText: {
-      color: "#ffffff",
-    },
-    progressTrack: {
-      height: 6,
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
-      borderRadius: r.full,
-      overflow: "hidden",
-      marginTop: sp[1],
-    },
-    progressFill: {
-      height: "100%",
-      backgroundColor: "#34d399", // Emerald color for progress
-      borderRadius: r.full,
-    },
-    listContent: {
-      paddingBottom: 100, // Espacio para el FAB
-    },
-    loaderColor: {
-      color: t.primary,
-    },
-    emptyContainer: {
-      paddingHorizontal: sp[8],
-      marginTop: 80,
-    },
-    emptyIconContainer: {
-      width: 80,
-      height: 80,
-      borderRadius: r.full,
-      backgroundColor: t.bgElevated,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-    },
-    emptyIconColor: {
-      color: t.textMuted,
-    },
-    emptyText: {
-      lineHeight: 22,
-    },
-    fab: {
-      position: "absolute",
-      bottom: sp[6],
-      right: sp[4],
-      backgroundColor: t.primary,
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: sp[4],
-      paddingVertical: sp[3],
-      borderRadius: r.full,
-      gap: sp[2],
-      elevation: 6,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-    },
-    fabText: {
-      color: "#ffffff",
-    },
-  }),
-);

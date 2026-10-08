@@ -1,8 +1,6 @@
 import { useRouter } from "expo-router";
 import { CheckCircle2 } from "lucide-react-native";
-import { Pressable, StyleSheet, View } from "react-native";
-import { HStack, Text, VStack } from "@/components/layout";
-import { makeStyles } from "@/hooks/useTheme";
+import { Pressable, Text, View } from "react-native";
 import type { PayDebtWithDebt } from "@/types";
 import { formatDate } from "@/utils";
 
@@ -11,7 +9,6 @@ interface HistoryElementProps {
 }
 
 export default function HistoryElement({ payment }: HistoryElementProps) {
-  const styles = useStyles();
   const router = useRouter();
 
   const handlePress = () => {
@@ -22,74 +19,36 @@ export default function HistoryElement({ payment }: HistoryElementProps) {
   return (
     <Pressable
       onPress={handlePress}
-      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+      className="w-full flex-row items-center justify-between p-4 bg-white active:bg-slate-50 active:opacity-80"
     >
-      <HStack align="center" gap="3" flex={1}>
-        <View style={styles.iconView}>
+      <View className="flex-row items-center gap-3 flex-1">
+        <View className="rounded-full bg-slate-100 p-2 items-center justify-center">
           <CheckCircle2
             size={24}
-            color={styles.checkIconColor.color}
+            color="#059669"
           />
         </View>
-        <VStack flex={1}>
-          <Text size="base" weight="semibold" color="text">
+        <View className="flex-1">
+          <Text
+            className="text-base font-semibold text-slate-900"
+            numberOfLines={1}
+          >
             {payment.debt.name}
           </Text>
-          <Text size="xs" color="textMuted" mt="1">
+          <Text className="text-xs text-slate-400 mt-1">
             {formatDate(payment.payDate)}
           </Text>
-        </VStack>
-      </HStack>
+        </View>
+      </View>
 
-      <VStack align="flex-end" justify="center" gap="1">
-        <Text size="sm" weight="bold" color="primary">
+      <View className="items-end justify-center gap-1">
+        <Text className="text-sm font-bold text-primary">
           {`C$ ${payment.amount.toLocaleString("es-NI", { minimumFractionDigits: 2 })}`}
         </Text>
-        <View style={styles.statusView}>
-          <Text weight="bold" style={styles.statusText}>
-            Pagado
-          </Text>
+        <View className="rounded-full bg-emerald-100 px-2 py-0.5 justify-center">
+          <Text className="text-[10px] font-bold text-emerald-700">Pagado</Text>
         </View>
-      </VStack>
+      </View>
     </Pressable>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    container: {
-      backgroundColor: t.bgElevated,
-      padding: sp[4],
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      gap: sp[2],
-      width: "100%",
-    },
-    pressed: {
-      opacity: 0.8,
-      backgroundColor: t.bgSubtle,
-    },
-    iconView: {
-      borderRadius: r.full,
-      backgroundColor: t.bgSubtle,
-      padding: sp[2],
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    checkIconColor: {
-      color: t.tertiary,
-    },
-    statusView: {
-      borderRadius: r.full,
-      backgroundColor: "#d1fae5", // soft emerald green background
-      paddingHorizontal: sp[2],
-      paddingVertical: 2,
-      justifyContent: "center",
-    },
-    statusText: {
-      fontSize: 10,
-      color: "#047857",
-    },
-  }),
-);

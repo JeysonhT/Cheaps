@@ -21,8 +21,14 @@ export default function DebtsLayout() {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="sellers" options={{ headerShown: false }} />
-      <Stack.Screen name="addCreditor" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="sellers"
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="addCreditor"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }

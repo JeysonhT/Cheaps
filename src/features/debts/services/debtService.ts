@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/SqliteHelper";
-import { CreateDebtDTO, DebtWithCreditor } from "@/types";
+import type { CreateDebtDTO, DebtWithCreditor } from "@/types";
 
 export interface DbDebtRow {
   id: number;
@@ -97,7 +97,7 @@ export const debtService = {
         creditor: creditorInfo,
       };
     } catch (e) {
-      let error = e as Error;
+      const error = e as Error;
       console.log(error.message);
       throw e;
     }

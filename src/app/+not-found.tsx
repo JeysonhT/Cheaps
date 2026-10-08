@@ -1,29 +1,24 @@
-import { Text, VStack } from "@/components/layout";
 import { Link, Stack } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
-      <VStack flex={1} align="center" justify="center" p="4">
-        <Text size="xl" weight="bold" color="text">
-          Esta Pagina no existe
+      <View className="flex-1 items-center justify-center p-4">
+        <Text className="text-xl font-bold text-slate-900">
+          Esta Página no existe
         </Text>
 
-        <Link href="/" style={styles.link}>
-          <Text size="sm" color="primary">
+        <Link
+          href="/"
+          className="mt-4 py-4"
+        >
+          <Text className="text-sm text-primary font-semibold">
             Go to home screen!
           </Text>
         </Link>
-      </VStack>
+      </View>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});

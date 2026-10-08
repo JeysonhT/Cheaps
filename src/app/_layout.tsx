@@ -57,9 +57,18 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <Stack initialRouteName="index">
           {/* Guardia de rol — siempre entra aquí primero */}
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(seller)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(seller)"
+            options={{ headerShown: false }}
+          />
         </Stack>
         <StatusBar style={"dark"} />
         <ToastMessage config={toastConfig} />

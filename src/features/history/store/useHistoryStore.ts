@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { PayDebtWithDebt } from "@/types";
+import type { PayDebtWithDebt } from "@/types";
 import { historyService } from "../services/historyService";
 
 interface HistoryState {
@@ -20,7 +20,10 @@ export const useHistoryStore = create<HistoryState>((set) => ({
       const payments = await historyService.getAllPayments();
       set({ payments, isLoading: false });
     } catch (err: any) {
-      set({ error: err.message || "Error al cargar el historial de pagos", isLoading: false });
+      set({
+        error: err.message || "Error al cargar el historial de pagos",
+        isLoading: false,
+      });
     }
   },
 }));

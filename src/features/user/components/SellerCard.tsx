@@ -9,7 +9,7 @@ import {
   User,
   Zap,
 } from "lucide-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Card from "@/components/Card";
 import { HStack, VStack } from "@/components/layout";
 import type { Creditor, DebtType, DebtWithCreditor } from "@/types";
@@ -55,13 +55,22 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
       <VStack className="gap-2">
         <HStack className="items-center">
           <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
-            <IconComponent color="#ffffff" size={24} />
+            <IconComponent
+              color="#ffffff"
+              size={24}
+            />
           </View>
           <VStack className="flex-1 justify-center ml-2">
-            <Text className="font-bold" numberOfLines={1}>
+            <Text
+              className="font-bold"
+              numberOfLines={1}
+            >
               {creditor.name}
             </Text>
-            <Text className="text-xs text-slate-500" numberOfLines={1}>
+            <Text
+              className="text-xs text-slate-500"
+              numberOfLines={1}
+            >
               {hasDebt ? largestDebt!.name : "Sin deudas activas"}
             </Text>
           </VStack>
@@ -76,16 +85,14 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
           <View className="height-6 rounded-full bg-slate-400 overflow-hidden">
             {/* Gradient fill */}
             <LinearGradient
-              colors={[
-                Styles.startProgressColor.color,
-                Styles.endProgressColor.color,
-              ]}
+              colors={["#064E3B", "#059669"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[
-                Styles.progressFill,
-                { width: `${Math.round(progressPct * 100)}%` },
-              ]}
+              style={{
+                width: `${Math.round(progressPct * 100)}%`,
+                height: "100%",
+                borderRadius: 100,
+              }}
             />
           </View>
         </VStack>
@@ -100,16 +107,3 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
     </Card>
   );
 }
-
-const Styles = StyleSheet.create({
-  startProgressColor: {
-    color: "#064E3B",
-  },
-  endProgressColor: {
-    color: "#059669",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 100,
-  },
-});

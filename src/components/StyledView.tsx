@@ -1,23 +1,17 @@
-import { View as DefaultView, StyleSheet, type ViewProps } from "react-native";
+import { View as DefaultView, type ViewProps } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { makeStyles } from "../hooks/useTheme";
 
-const useStyle = makeStyles((t) =>
-  StyleSheet.create({
-    viewStyle: {
-      flex: 1,
-      backgroundColor: t.bg,
-    },
-  }),
-);
+interface MainProps extends ViewProps {
+  className?: string;
+}
 
-export default function Main({ style, ...props }: ViewProps) {
-  const styles = useStyle();
+export default function Main({ className, style, ...props }: MainProps) {
   const insets = useSafeAreaInsets();
 
   return (
     <DefaultView
-      style={[styles.viewStyle, style, { paddingTop: insets.top }]}
+      className={`flex-1 bg-white ${className ?? ""}`}
+      style={[{ paddingTop: insets.top }, style]}
       {...props}
     />
   );
