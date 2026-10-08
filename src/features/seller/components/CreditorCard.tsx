@@ -1,21 +1,19 @@
+import { Building2, Pencil, Phone, Trash2 } from "lucide-react-native";
+import { Linking, Pressable, Text, View } from "react-native";
 import Card from "@/components/Card";
-import { Label, SubTitle } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
-import { Creditor } from "@/types";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
-import { Linking, Pressable, StyleSheet, View } from "react-native";
+import type { Creditor } from "@/types";
 
 interface CreditorCardProps {
   creditor: Creditor;
+  onEdit?: (creditor: Creditor) => void;
   onDelete?: (id: number) => void;
 }
 
 export default function CreditorCard({
   creditor,
+  onEdit,
   onDelete,
 }: CreditorCardProps) {
-  const styles = useStyles();
-
   const handleCall = () => {
     if (creditor.phoneNumber) {
       Linking.openURL(`tel:${creditor.phoneNumber}`);
@@ -23,44 +21,64 @@ export default function CreditorCard({
   };
 
   return (
-    <Card style={styles.card}>
-      <View style={styles.container}>
-        <View style={styles.avatar}>
-          <MaterialIcons
-            name="corporate-fare"
+    <Card className="my-1 mx-3 p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
+      <View className="flex-row items-center">
+        {/* Avatar */}
+        <View className="w-12 h-12 rounded-full bg-slate-100 items-center justify-center mr-3">
+          <Building2
             size={24}
-            color={styles.iconColor.color}
+            color="#064E3B"
           />
         </View>
 
-        <View style={styles.content}>
-          <Label style={styles.name}>{creditor.name}</Label>
+        {/* Info */}
+        <View className="flex-1 justify-center">
+          <Text className="text-base font-semibold text-slate-900">
+            {creditor.name}
+          </Text>
           {creditor.phoneNumber ? (
-            <SubTitle style={styles.phone}>{creditor.phoneNumber}</SubTitle>
+            <Text className="text-sm text-slate-500 mt-1">
+              {creditor.phoneNumber}
+            </Text>
           ) : (
-            <SubTitle style={styles.noPhone}>Sin teléfono registrado</SubTitle>
+            <Text className="text-sm text-slate-400 mt-1 italic">
+              Sin teléfono registrado
+            </Text>
           )}
         </View>
 
-        <View style={styles.actions}>
+        {/* Action Buttons */}
+        <View className="flex-row items-center gap-2">
           {creditor.phoneNumber && (
-            <Pressable onPress={handleCall} style={styles.actionButton}>
-              <MaterialIcons
-                name="call"
-                size={20}
-                color={styles.callIconColor.color}
+            <Pressable
+              onPress={handleCall}
+              className="w-9 h-9 rounded-full bg-blue-50 items-center justify-center active:opacity-70"
+            >
+              <Phone
+                size={18}
+                color="#2563EB"
+              />
+            </Pressable>
+          )}
+          {onEdit && (
+            <Pressable
+              onPress={() => onEdit(creditor)}
+              className="w-9 h-9 rounded-full bg-emerald-50 items-center justify-center active:opacity-70"
+            >
+              <Pencil
+                size={18}
+                color="#064E3B"
               />
             </Pressable>
           )}
           {onDelete && (
             <Pressable
               onPress={() => onDelete(creditor.id)}
-              style={[styles.actionButton, styles.deleteButton]}
+              className="w-9 h-9 rounded-full bg-red-100 items-center justify-center active:opacity-70"
             >
-              <MaterialIcons
-                name="delete-outline"
-                size={20}
-                color={styles.deleteIconColor.color}
+              <Trash2
+                size={18}
+                color="#ef4444"
               />
             </Pressable>
           )}
@@ -69,72 +87,3 @@ export default function CreditorCard({
     </Card>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    card: {
-      backgroundColor: t.bgElevated,
-      marginVertical: sp[1],
-      marginHorizontal: sp[3],
-      padding: sp[3],
-    },
-    container: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    avatar: {
-      width: 48,
-      height: 48,
-      borderRadius: r.full,
-      backgroundColor: t.bgMuted,
-      alignItems: "center",
-      justifyContent: "center",
-      marginRight: sp[3],
-    },
-    iconColor: {
-      color: t.primary,
-    },
-    content: {
-      flex: 1,
-      justifyContent: "center",
-    },
-    name: {
-      fontWeight: fw.semibold,
-      fontSize: fs.md,
-      color: t.text,
-    },
-    phone: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-      marginTop: sp[1],
-    },
-    noPhone: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-      fontStyle: "italic",
-      marginTop: sp[1],
-    },
-    actions: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: sp[2],
-    },
-    actionButton: {
-      width: 36,
-      height: 36,
-      borderRadius: r.full,
-      backgroundColor: t.bgSubtle,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    deleteButton: {
-      backgroundColor: "#fee2e2",
-    },
-    callIconColor: {
-      color: t.secondary,
-    },
-    deleteIconColor: {
-      color: t.error,
-    },
-  }),
-);

@@ -1,7 +1,7 @@
+import type { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SellerTabs from "@/components/SellerTabs";
 import Colors from "@/constants/Colors";
-import { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SellerLayout() {
   const insets = useSafeAreaInsets();
@@ -14,5 +14,10 @@ export default function SellerLayout() {
     },
   };
 
-  return <SellerTabs options={tabsOptions} iconSize={24} />;
+  return (
+    <SellerTabs
+      options={tabsOptions}
+      iconSize={24}
+    />
+  );
 }

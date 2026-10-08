@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/SqliteHelper";
-import { PayDebtWithDebt } from "@/types";
+import type { PayDebtWithDebt } from "@/types";
 
 interface DbHistoryRow {
   id: number;

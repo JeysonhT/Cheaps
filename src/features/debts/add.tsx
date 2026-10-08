@@ -1,10 +1,17 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import Main from "@/components/StyledView";
-import { useCreditors } from "@/features/seller/hooks/useCreditors";
-import { makeStyles } from "@/hooks/useTheme";
-import { DebtType } from "@/types";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import {
+  ArrowLeft,
+  Car,
+  ChevronDown,
+  CircleHelp,
+  CreditCard,
+  Home,
+  type LucideIcon,
+  MoreHorizontal,
+  Save,
+  User,
+  Zap,
+} from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -12,21 +19,28 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
+  Text,
   TextInput,
   View,
 } from "react-native";
+import Toast from "react-native-toast-message";
+import Button from "@/components/Button";
+import Main from "@/components/StyledView";
+import { useCreditors } from "@/features/seller/hooks/useCreditors";
+import type { DebtType } from "@/types";
+import useCheckCreditors from "./hooks/useCheckCreditors";
 import { useDebts } from "./hooks/useDebts";
 
 export default function AddDebtScreen() {
-  const styles = useStyles();
   const router = useRouter();
   const { addDebt } = useDebts();
   const { creditors, fetchCreditors } = useCreditors();
 
+  const { isLoading, response } = useCheckCreditors();
+
   useEffect(() => {
     fetchCreditors();
-  }, []);
+  }, [fetchCreditors]);
 
   const [selectedCreditorId, setSelectedCreditorId] = useState<string>("");
   const [name, setName] = useState("");
@@ -65,15 +79,20 @@ export default function AddDebtScreen() {
   };
 
   const handleSave = async () => {
+    if (!selectedCreditorId.trim()) {
+      setErrorMsg("El id del acreedor es necesario");
+      return;
+    }
+
     if (!name.trim()) {
       setErrorMsg("El nombre de la deuda es requerido");
       return;
     }
-    if (!amount.trim() || isNaN(originalVal) || originalVal <= 0) {
+    if (!amount.trim() || Number.isNaN(originalVal) || originalVal <= 0) {
       setErrorMsg("El monto original debe ser un número mayor a 0");
       return;
     }
-    if (!currentAmount.trim() || isNaN(currentVal) || currentVal < 0) {
+    if (!currentAmount.trim() || Number.isNaN(currentVal) || currentVal < 0) {
       setErrorMsg("El saldo pendiente debe ser un número válido");
       return;
     }
@@ -83,8 +102,8 @@ export default function AddDebtScreen() {
       );
       return;
     }
-    const freq = parseInt(payFrequency);
-    if (isNaN(freq) || freq <= 0) {
+    const freq = parseInt(payFrequency, 10);
+    if (Number.isNaN(freq) || freq <= 0) {
       setErrorMsg("La frecuencia de pago debe ser al menos 1 día");
       return;
     }
@@ -94,7 +113,9 @@ export default function AddDebtScreen() {
 
     try {
       await addDebt({
-        idCreditor: selectedCreditorId ? parseInt(selectedCreditorId) : null,
+        idCreditor: selectedCreditorId
+          ? parseInt(selectedCreditorId, 10)
+          : null,
         type: debtType,
         payFrecuency: freq,
         name: name.trim(),
@@ -102,6 +123,13 @@ export default function AddDebtScreen() {
         amount: originalVal,
         currentAmount: currentVal,
       });
+
+      Toast.show({
+        type: "success",
+        text1: "¡Éxito!",
+        text2: "La deuda se registró correctamente",
+      });
+
       router.back();
     } catch (error: any) {
       setErrorMsg(error.message || "Ocurrió un error al registrar la deuda");
@@ -109,111 +137,134 @@ export default function AddDebtScreen() {
     }
   };
 
-  const typesList: { type: DebtType; label: string; icon: string }[] = [
-    { type: "personal", label: "Personal", icon: "person" },
-    { type: "tarjeta", label: "Tarjeta", icon: "credit-card" },
-    { type: "hipoteca", label: "Hipoteca", icon: "home" },
-    { type: "auto", label: "Auto", icon: "directions-car" },
-    { type: "servicio", label: "Servicio", icon: "bolt" },
-    { type: "otro", label: "Otro", icon: "more-horiz" },
+  const typesList: { type: DebtType; label: string; icon: LucideIcon }[] = [
+    { type: "personal", label: "Personal", icon: User },
+    { type: "tarjeta", label: "Tarjeta", icon: CreditCard },
+    { type: "hipoteca", label: "Hipoteca", icon: Home },
+    { type: "auto", label: "Auto", icon: Car },
+    { type: "servicio", label: "Servicio", icon: Zap },
+    { type: "otro", label: "Otro", icon: MoreHorizontal },
   ];
 
   const selectedCreditorName = selectedCreditorId
     ? creditors.find((c) => c.id.toString() === selectedCreditorId)?.name
     : "Selecciona un acreedor";
 
+  if (isLoading) {
+    return (
+      <Main className="flex-1 justify-center items-center bg-slate-50">
+        <View className="items-center justify-center p-2 gap-2">
+          <ActivityIndicator
+            color="#064E3B"
+            size="large"
+          />
+          <Text className="text-base font-bold text-slate-900 text-center">
+            Cargando datos de Acreedores
+          </Text>
+        </View>
+      </Main>
+    );
+  }
+
+  if (response?.totalCreditors === 0) {
+    return (
+      <Main className="flex-1 justify-center items-center bg-slate-50">
+        <View className="items-center justify-center p-6 gap-2">
+          <Text className="text-xl font-bold text-slate-900 text-center">
+            Para crear una deuda ingresa primero un acreedor
+          </Text>
+        </View>
+      </Main>
+    );
+  }
+
   return (
-    <Main style={styles.outerContainer}>
+    <Main className="flex-1 bg-slate-50">
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.keyboardContainer}
+        className="flex-1"
       >
         {/* Custom Header */}
-        <View style={styles.header}>
-          <Pressable onPress={() => router.back()} style={styles.backButton}>
-            <MaterialIcons
-              name="arrow-back"
+        <View className="h-14 px-3 bg-white border-b border-slate-200 flex-row items-center justify-between">
+          <Pressable
+            onPress={() => router.back()}
+            className="p-2 rounded-full active:bg-slate-100"
+          >
+            <ArrowLeft
               size={24}
-              color={styles.iconColor.color}
+              color="#0f172a"
             />
           </Pressable>
-          <Title style={styles.headerTitle}>Registrar Deuda</Title>
-          <View style={styles.helpButton}>
-            <MaterialIcons
-              name="info-outline"
+          <Text className="text-lg font-bold text-primary">
+            Registrar Deuda
+          </Text>
+          <View className="p-2">
+            <CircleHelp
               size={24}
-              color={styles.iconMutedColor.color}
+              color="#94a3b8"
             />
           </View>
         </View>
 
         <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
+          className="flex-1"
+          contentContainerClassName="p-4 pb-8"
           keyboardShouldPersistTaps="handled"
         >
           {/* Welcome Info Card */}
-          <View style={styles.introCard}>
-            <View style={styles.introIconContainer}>
-              <MaterialIcons name="add-card" size={24} color="#064e3b" />
+          <View className="bg-white border border-slate-200 rounded-xl p-4 mb-4 flex-row items-start gap-3 shadow-sm">
+            <View className="bg-emerald-100 w-11 h-11 rounded-lg items-center justify-center">
+              <CreditCard
+                size={24}
+                color="#064e3b"
+              />
             </View>
-            <View style={styles.introTextContainer}>
-              <Title style={styles.introTitle}>Detalles de la Deuda</Title>
-              <SubTitle style={styles.introSubtitle}>
+            <View className="flex-1">
+              <Text className="text-base font-bold text-slate-900 mb-1">
+                Detalles de la Deuda
+              </Text>
+              <Text className="text-sm text-slate-500 leading-5">
                 Ingresa la información detallada de tu deuda para hacer un
                 seguimiento eficiente
-              </SubTitle>
+              </Text>
             </View>
           </View>
 
           {/* Form container */}
-          <View style={styles.formCard}>
+          <View className="bg-white rounded-xl p-4 border border-slate-200 gap-4 shadow-sm z-10">
             {/* Field: Creditor */}
-            <View style={styles.inputGroup}>
-              <Label style={styles.inputLabel}>Acreedor</Label>
-              <Pressable
-                style={styles.dropdownButton}
-                onPress={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <Label
-                  style={
-                    selectedCreditorId
-                      ? styles.dropdownTextSelected
-                      : styles.dropdownTextPlaceholder
-                  }
-                >
-                  {selectedCreditorName}
-                </Label>
-                <MaterialIcons
-                  name="expand-more"
-                  size={24}
-                  color={styles.iconMutedColor.color}
-                />
+            <View className="gap-1">
+              <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                Acreedor
+              </Text>
+              <Pressable onPress={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <View className="flex-row items-center justify-between bg-slate-50 border border-slate-300 rounded-lg px-3 h-12">
+                  <Text
+                    className={`text-base ${
+                      selectedCreditorId ? "text-slate-900" : "text-slate-400"
+                    }`}
+                  >
+                    {selectedCreditorName}
+                  </Text>
+                  <ChevronDown
+                    size={24}
+                    color="#94a3b8"
+                  />
+                </View>
               </Pressable>
 
               {isDropdownOpen && (
-                <View style={styles.dropdownList}>
-                  <Pressable
-                    style={styles.dropdownItem}
-                    onPress={() => {
-                      setSelectedCreditorId("");
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    <Label style={styles.dropdownItemText}>
-                      Ninguno (Sin acreedor)
-                    </Label>
-                  </Pressable>
+                <View className="bg-white border border-slate-300 rounded-lg mt-1 max-h-48 overflow-hidden shadow-md">
                   {creditors.map((c) => (
                     <Pressable
                       key={c.id}
-                      style={styles.dropdownItem}
+                      className="p-3 border-b border-slate-100 active:bg-slate-50"
                       onPress={() => {
                         setSelectedCreditorId(c.id.toString());
                         setIsDropdownOpen(false);
                       }}
                     >
-                      <Label style={styles.dropdownItemText}>{c.name}</Label>
+                      <Text className="text-base text-slate-900">{c.name}</Text>
                     </Pressable>
                   ))}
                 </View>
@@ -221,13 +272,16 @@ export default function AddDebtScreen() {
             </View>
 
             {/* Field: Name */}
-            <View style={styles.inputGroup}>
-              <Label style={styles.inputLabel}>Nombre de la Deuda</Label>
+            <View className="gap-1">
+              <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                Nombre de la Deuda
+              </Text>
               <View
-                style={[
-                  styles.inputWrapper,
-                  isNameFocused && styles.inputWrapperFocused,
-                ]}
+                className={`flex-row items-center bg-slate-50 rounded-lg px-3 h-12 border ${
+                  isNameFocused
+                    ? "border-2 border-primary bg-white"
+                    : "border-slate-300"
+                }`}
               >
                 <TextInput
                   value={name}
@@ -236,8 +290,8 @@ export default function AddDebtScreen() {
                     if (errorMsg) setErrorMsg(null);
                   }}
                   placeholder="Ej. Préstamo Personal"
-                  placeholderTextColor={styles.placeholderColor.color}
-                  style={styles.textInput}
+                  placeholderTextColor="#94a3b8"
+                  className="flex-1 text-base text-slate-900 h-full"
                   onFocus={() => setIsNameFocused(true)}
                   onBlur={() => setIsNameFocused(false)}
                 />
@@ -245,35 +299,41 @@ export default function AddDebtScreen() {
             </View>
 
             {/* Field: Debt Type */}
-            <View style={styles.inputGroup}>
-              <Label style={styles.inputLabel}>Tipo de Deuda</Label>
-              <View style={styles.typesGrid}>
+            <View className="gap-1">
+              <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                Tipo de Deuda
+              </Text>
+              <View className="flex-row flex-wrap gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
                 {typesList.map((item) => {
                   const isActive = debtType === item.type;
+                  const TypeIcon = item.icon;
                   return (
                     <Pressable
                       key={item.type}
-                      style={[
-                        styles.typeButton,
-                        isActive && styles.typeButtonActive,
-                      ]}
                       onPress={() => setDebtType(item.type)}
+                      style={{ width: "30.5%" }}
                     >
-                      <MaterialIcons
-                        name={item.icon as any}
-                        size={20}
-                        color={
-                          isActive ? "#ffffff" : styles.iconMutedColor.color
-                        }
-                      />
-                      <Label
-                        style={[
-                          styles.typeButtonText,
-                          isActive && styles.typeButtonTextActive,
-                        ]}
+                      <View
+                        className={`w-full py-2 rounded-lg items-center justify-center gap-1 border ${
+                          isActive
+                            ? "bg-primary border-primary"
+                            : "bg-white border-slate-200"
+                        }`}
                       >
-                        {item.label}
-                      </Label>
+                        <TypeIcon
+                          size={20}
+                          color={isActive ? "#ffffff" : "#94a3b8"}
+                        />
+                        <Text
+                          className={`text-xs ${
+                            isActive
+                              ? "font-semibold text-white"
+                              : "font-medium text-slate-500"
+                          }`}
+                        >
+                          {item.label}
+                        </Text>
+                      </View>
                     </Pressable>
                   );
                 })}
@@ -281,24 +341,27 @@ export default function AddDebtScreen() {
             </View>
 
             {/* Financials Row */}
-            <View style={styles.row}>
+            <View className="flex-row gap-3">
               {/* Monto Original */}
-              <View style={[styles.inputGroup, styles.flexHalf]}>
-                <Label style={styles.inputLabel}>Monto Original</Label>
+              <View className="flex-1 gap-1">
+                <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                  Monto Original
+                </Text>
                 <View
-                  style={[
-                    styles.inputWrapper,
-                    isAmountFocused && styles.inputWrapperFocused,
-                  ]}
+                  className={`flex-row items-center bg-slate-50 rounded-lg px-3 h-12 border ${
+                    isAmountFocused
+                      ? "border-2 border-primary bg-white"
+                      : "border-slate-300"
+                  }`}
                 >
-                  <Label style={styles.currencyPrefix}>C$</Label>
+                  <Text className="font-semibold text-slate-400 mr-2">C$</Text>
                   <TextInput
                     value={amount}
                     onChangeText={setAmount}
                     placeholder="0.00"
-                    placeholderTextColor={styles.placeholderColor.color}
+                    placeholderTextColor="#94a3b8"
                     keyboardType="numeric"
-                    style={styles.textInputNumeric}
+                    className="flex-1 text-base text-slate-900 h-full"
                     onFocus={() => setIsAmountFocused(true)}
                     onBlur={() => setIsAmountFocused(false)}
                   />
@@ -306,22 +369,25 @@ export default function AddDebtScreen() {
               </View>
 
               {/* Saldo Pendiente */}
-              <View style={[styles.inputGroup, styles.flexHalf]}>
-                <Label style={styles.inputLabel}>Saldo Pendiente</Label>
+              <View className="flex-1 gap-1">
+                <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                  Saldo Pendiente
+                </Text>
                 <View
-                  style={[
-                    styles.inputWrapper,
-                    isCurrentAmountFocused && styles.inputWrapperFocused,
-                  ]}
+                  className={`flex-row items-center bg-slate-50 rounded-lg px-3 h-12 border ${
+                    isCurrentAmountFocused
+                      ? "border-2 border-primary bg-white"
+                      : "border-slate-300"
+                  }`}
                 >
-                  <Label style={styles.currencyPrefix}>C$</Label>
+                  <Text className="font-semibold text-slate-400 mr-2">C$</Text>
                   <TextInput
                     value={currentAmount}
                     onChangeText={setCurrentAmount}
                     placeholder="0.00"
-                    placeholderTextColor={styles.placeholderColor.color}
+                    placeholderTextColor="#94a3b8"
                     keyboardType="numeric"
-                    style={styles.textInputNumeric}
+                    className="flex-1 text-base text-slate-900 h-full"
                     onFocus={() => setIsCurrentAmountFocused(true)}
                     onBlur={() => setIsCurrentAmountFocused(false)}
                   />
@@ -330,45 +396,51 @@ export default function AddDebtScreen() {
             </View>
 
             {/* Timing row */}
-            <View style={styles.row}>
+            <View className="flex-row gap-3">
               {/* Frecuencia de Pago */}
-              <View style={[styles.inputGroup, styles.flexHalf]}>
-                <Label style={styles.inputLabel}>Frecuencia (Días)</Label>
+              <View className="flex-1 gap-1">
+                <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                  Frecuencia (Días)
+                </Text>
                 <View
-                  style={[
-                    styles.inputWrapper,
-                    isFrequencyFocused && styles.inputWrapperFocused,
-                  ]}
+                  className={`flex-row items-center bg-slate-50 rounded-lg px-3 h-12 border ${
+                    isFrequencyFocused
+                      ? "border-2 border-primary bg-white"
+                      : "border-slate-300"
+                  }`}
                 >
                   <TextInput
                     value={payFrequency}
                     onChangeText={setPayFrequency}
                     placeholder="30"
-                    placeholderTextColor={styles.placeholderColor.color}
+                    placeholderTextColor="#94a3b8"
                     keyboardType="numeric"
-                    style={styles.textInputNumeric}
+                    className="flex-1 text-base text-slate-900 h-full"
                     onFocus={() => setIsFrequencyFocused(true)}
                     onBlur={() => setIsFrequencyFocused(false)}
                   />
-                  <Label style={styles.inputSuffix}>días</Label>
+                  <Text className="text-sm text-slate-400 ml-2">días</Text>
                 </View>
               </View>
 
               {/* Fecha de Inicio */}
-              <View style={[styles.inputGroup, styles.flexHalf]}>
-                <Label style={styles.inputLabel}>Fecha de Inicio</Label>
+              <View className="flex-1 gap-1">
+                <Text className="text-xs font-semibold uppercase tracking-wider text-primary pl-1">
+                  Fecha de Inicio
+                </Text>
                 <View
-                  style={[
-                    styles.inputWrapper,
-                    isDateFocused && styles.inputWrapperFocused,
-                  ]}
+                  className={`flex-row items-center bg-slate-50 rounded-lg px-3 h-12 border ${
+                    isDateFocused
+                      ? "border-2 border-primary bg-white"
+                      : "border-slate-300"
+                  }`}
                 >
                   <TextInput
                     value={startDate}
                     onChangeText={setStartDate}
                     placeholder="AAAA-MM-DD"
-                    placeholderTextColor={styles.placeholderColor.color}
-                    style={styles.textInput}
+                    placeholderTextColor="#94a3b8"
+                    className="flex-1 text-base text-slate-900 h-full"
                     onFocus={() => setIsDateFocused(true)}
                     onBlur={() => setIsDateFocused(false)}
                   />
@@ -376,365 +448,52 @@ export default function AddDebtScreen() {
               </View>
             </View>
 
-            <SubTitle style={styles.frequencyDesc}>
-              {getFreqDescription(parseInt(payFrequency) || 0)}
-            </SubTitle>
+            <Text className="text-xs text-slate-400 italic pl-1 -mt-2">
+              {getFreqDescription(parseInt(payFrequency, 10) || 0)}
+            </Text>
 
-            {errorMsg && <Label style={styles.errorText}>{errorMsg}</Label>}
+            {errorMsg && (
+              <Text className="text-sm font-semibold text-red-500 px-1">
+                {errorMsg}
+              </Text>
+            )}
           </View>
 
           {/* Real-time Visualization Component */}
-          <View style={styles.visualCard}>
-            <View style={styles.visualHeader}>
-              <Label style={styles.visualTitle}>Progreso Estimado</Label>
-              <Label style={styles.visualPct}>{displayPct}%</Label>
+          <View className="bg-white rounded-xl p-4 border border-slate-200 mt-4 gap-2 shadow-sm">
+            <View className="flex-row items-end justify-between">
+              <Text className="text-sm text-slate-500">Progreso Estimado</Text>
+              <Text className="text-base font-bold text-primary">
+                {displayPct}%
+              </Text>
             </View>
-            <View style={styles.visualTrack}>
-              <View style={[styles.visualFill, { width: `${displayPct}%` }]} />
+            <View className="h-3 bg-slate-100 rounded-full overflow-hidden my-1">
+              <View
+                className="h-full bg-primary rounded-full"
+                style={{ width: `${displayPct}%` }}
+              />
             </View>
-            <View style={styles.visualFooter}>
-              <SubTitle style={styles.visualFooterText}>
+            <View className="flex-row justify-between">
+              <Text className="text-xs font-medium uppercase tracking-wider text-slate-400">
                 Inicio del Ciclo
-              </SubTitle>
-              <SubTitle style={styles.visualFooterText}>
+              </Text>
+              <Text className="text-xs font-medium uppercase tracking-wider text-slate-400">
                 Meta de Liquidación
-              </SubTitle>
+              </Text>
             </View>
           </View>
         </ScrollView>
 
         {/* Footer sticky */}
-        <View style={styles.footer}>
-          <Pressable
-            style={({ pressed }) => [
-              styles.submitButton,
-              pressed && styles.submitButtonPressed,
-              isSubmitting && styles.submitButtonDisabled,
-            ]}
+        <View className="bg-white border-t border-slate-200 p-4">
+          <Button
             onPress={handleSave}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <ActivityIndicator size="small" color="#ffffff" />
-            ) : (
-              <>
-                <MaterialIcons name="save" size={20} color="#ffffff" />
-                <Label style={styles.submitButtonText}>Registrar Deuda</Label>
-              </>
-            )}
-          </Pressable>
+            loading={isSubmitting}
+            label="Registrar Deuda"
+            icon={Save}
+          />
         </View>
       </KeyboardAvoidingView>
     </Main>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    outerContainer: {
-      flex: 1,
-      backgroundColor: t.bgSubtle,
-    },
-    keyboardContainer: {
-      flex: 1,
-    },
-    scrollView: {
-      flex: 1,
-    },
-    header: {
-      height: 60,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: sp[3],
-      backgroundColor: t.bgElevated,
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    backButton: {
-      padding: sp[2],
-      borderRadius: r.full,
-    },
-    headerTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.primary,
-    },
-    helpButton: {
-      padding: sp[2],
-      opacity: 0.8,
-    },
-    iconColor: {
-      color: t.text,
-    },
-    iconMutedColor: {
-      color: t.textMuted,
-    },
-    placeholderColor: {
-      color: t.textMuted,
-    },
-    scrollContent: {
-      padding: sp[4],
-      paddingBottom: sp[8],
-    },
-    introCard: {
-      backgroundColor: t.bgElevated,
-      borderWidth: 1,
-      borderColor: t.border,
-      borderRadius: r.lg,
-      padding: sp[4],
-      flexDirection: "row",
-      alignItems: "flex-start",
-      gap: sp[3],
-      marginBottom: sp[4],
-    },
-    introIconContainer: {
-      backgroundColor: "#b0f0d6", // light emerald background
-      width: 44,
-      height: 44,
-      borderRadius: r.md,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    introTextContainer: {
-      flex: 1,
-    },
-    introTitle: {
-      fontSize: fs.md,
-      fontWeight: fw.bold,
-      color: t.text,
-      marginBottom: 2,
-    },
-    introSubtitle: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-      lineHeight: 18,
-    },
-    formCard: {
-      backgroundColor: t.bgElevated,
-      borderRadius: r.lg,
-      padding: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-      gap: sp[4],
-      zIndex: 10,
-    },
-    inputGroup: {
-      gap: sp[1],
-    },
-    inputLabel: {
-      fontSize: fs.sm,
-      fontWeight: fw.semibold,
-      color: t.primary,
-      textTransform: "uppercase",
-      letterSpacing: 0.5,
-      paddingLeft: sp[1],
-    },
-    dropdownButton: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: t.bg,
-      borderWidth: 1,
-      borderColor: t.borderStrong,
-      borderRadius: r.md,
-      paddingHorizontal: sp[3],
-      height: 48,
-    },
-    dropdownTextPlaceholder: {
-      color: t.textMuted,
-      fontSize: fs.base,
-    },
-    dropdownTextSelected: {
-      color: t.text,
-      fontSize: fs.base,
-    },
-    dropdownList: {
-      backgroundColor: t.bgElevated,
-      borderWidth: 1,
-      borderColor: t.borderStrong,
-      borderRadius: r.md,
-      marginTop: sp[1],
-      maxHeight: 200,
-      overflow: "scroll",
-    },
-    dropdownItem: {
-      padding: sp[3],
-      borderBottomWidth: 1,
-      borderBottomColor: t.border,
-    },
-    dropdownItemText: {
-      fontSize: fs.base,
-      color: t.text,
-    },
-    inputWrapper: {
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: t.bg,
-      borderWidth: 1,
-      borderColor: t.borderStrong,
-      borderRadius: r.md,
-      paddingHorizontal: sp[3],
-      height: 48,
-    },
-    inputWrapperFocused: {
-      borderColor: t.primary,
-      borderWidth: 2,
-    },
-    textInput: {
-      flex: 1,
-      fontSize: fs.base,
-      color: t.text,
-      height: "100%",
-    },
-    textInputNumeric: {
-      flex: 1,
-      fontSize: fs.base,
-      color: t.text,
-      height: "100%",
-      fontFamily: "SpaceMono", // Using custom tabular fonts
-    },
-    currencyPrefix: {
-      marginRight: sp[2],
-      fontWeight: fw.semibold,
-      color: t.textMuted,
-    },
-    inputSuffix: {
-      marginLeft: sp[2],
-      color: t.textMuted,
-      fontSize: fs.sm,
-    },
-    typesGrid: {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      gap: sp[2],
-      backgroundColor: t.bgSubtle,
-      padding: sp[2],
-      borderRadius: r.lg,
-      borderWidth: 1,
-      borderColor: t.border,
-    },
-    typeButton: {
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "30.5%", // Approx 3 items per row
-      paddingVertical: sp[2],
-      borderRadius: r.md,
-      backgroundColor: t.bgElevated,
-      borderWidth: 1,
-      borderColor: t.border,
-      gap: sp[1],
-    },
-    typeButtonActive: {
-      backgroundColor: "#064e3b", // solid primary container color from stitch
-      borderColor: "#064e3b",
-    },
-    typeButtonText: {
-      fontSize: fs.xs,
-      fontWeight: fw.medium,
-      color: t.textMuted,
-    },
-    typeButtonTextActive: {
-      color: "#ffffff",
-      fontWeight: fw.semibold,
-    },
-    row: {
-      flexDirection: "row",
-      gap: sp[3],
-    },
-    flexHalf: {
-      flex: 1,
-    },
-    frequencyDesc: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-      fontStyle: "italic",
-      paddingLeft: sp[1],
-      marginTop: -sp[2],
-    },
-    errorText: {
-      color: t.error,
-      fontSize: fs.sm,
-      fontWeight: fw.semibold,
-      paddingHorizontal: sp[1],
-    },
-    visualCard: {
-      backgroundColor: t.bgElevated,
-      borderRadius: r.lg,
-      padding: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-      marginTop: sp[4],
-      gap: sp[2],
-    },
-    visualHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "flex-end",
-    },
-    visualTitle: {
-      fontSize: fs.sm,
-      color: t.textMuted,
-    },
-    visualPct: {
-      fontSize: fs.base,
-      fontWeight: fw.bold,
-      color: t.primary,
-    },
-    visualTrack: {
-      height: 12,
-      backgroundColor: t.bgMuted,
-      borderRadius: r.full,
-      overflow: "hidden",
-      marginVertical: sp[1],
-    },
-    visualFill: {
-      height: "100%",
-      backgroundColor: "#064e3b", // solid primary green
-      borderRadius: r.full,
-    },
-    visualFooter: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    visualFooterText: {
-      fontSize: fs.xs,
-      color: t.textMuted,
-      textTransform: "uppercase",
-      fontWeight: fw.medium,
-    },
-    footer: {
-      backgroundColor: t.bgElevated,
-      borderTopWidth: 1,
-      borderTopColor: t.border,
-      padding: sp[4],
-    },
-    submitButton: {
-      backgroundColor: t.primary,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      height: 52,
-      borderRadius: r.lg,
-      gap: sp[2],
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 3,
-    },
-    submitButtonPressed: {
-      opacity: 0.9,
-      transform: [{ scale: 0.98 }],
-    },
-    submitButtonDisabled: {
-      opacity: 0.6,
-    },
-    submitButtonText: {
-      color: "#ffffff",
-      fontWeight: fw.bold,
-      fontSize: fs.md,
-    },
-  }),
-);

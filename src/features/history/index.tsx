@@ -1,18 +1,15 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
+import { ReceiptText } from "lucide-react-native";
 import { useEffect } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import HistoryElement from "./components/HistoryElement";
 import { useHistory } from "./hooks/useHistory";
 
 export default function HistoryDashboard() {
-  const styles = useStyles();
   const { payments, isLoading, fetchHistory } = useHistory();
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const totalPayments = payments.reduce((sum, p) => sum + p.amount, 0);
 
@@ -21,59 +18,64 @@ export default function HistoryDashboard() {
   };
 
   const renderHeader = () => (
-    <View style={styles.header}>
+    <View className="pt-4 pb-2">
       {/* Resumen Card */}
-      <View style={styles.summaryCard}>
-        <SubTitle style={styles.summaryLabel}>
+      <View className="bg-primary rounded-2xl p-4 mx-4 mb-4 shadow-sm">
+        <Text className="text-xs font-semibold text-[#85f8c4] uppercase tracking-wider">
           Total Abonado al Historial
-        </SubTitle>
-        <Title style={styles.summaryAmount}>
+        </Text>
+        <Text className="text-2xl font-bold text-white mt-1">
           {formatCurrency(totalPayments)}
-        </Title>
-        <SubTitle style={styles.summarySubtext}>
+        </Text>
+        <Text className="text-xs text-white/80 italic mt-2">
           {`Has registrado un total de ${payments.length} abonos.`}
-        </SubTitle>
+        </Text>
       </View>
-      <Title style={styles.sectionTitle}>Historial de Transacciones</Title>
+      <Text className="text-lg font-bold text-slate-900 mx-4 mt-2">
+        Historial de Transacciones
+      </Text>
     </View>
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <View style={styles.emptyIconContainer}>
-        <MaterialIcons
-          name="receipt-long"
-          size={48}
-          color={styles.emptyIconColor.color}
+    <View className="items-center justify-center px-8 mt-20">
+      <View className="w-20 h-20 rounded-full bg-white items-center justify-center mb-4 border border-slate-200">
+        <ReceiptText
+          size={36}
+          color="#94a3b8"
         />
       </View>
-      <Label style={styles.emptyTitle}>No hay transacciones registradas</Label>
-      <SubTitle style={styles.emptyText}>
+      <Text className="text-lg font-bold text-slate-900 text-center mb-2">
+        No hay transacciones registradas
+      </Text>
+      <Text className="text-base text-slate-400 text-center leading-6">
         Tus abonos registrados a deudas aparecerán listados aquí para llevar un
         control estricto.
-      </SubTitle>
+      </Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-slate-50">
       {isLoading && payments.length === 0 ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={styles.loaderColor.color} />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
         </View>
       ) : (
         <FlatList
           data={payments}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.elementWrapper}>
+            <View className="bg-white mx-4 my-1 rounded-xl overflow-hidden border border-slate-200 shadow-sm">
               <HistoryElement payment={item} />
-              <View style={styles.separator} />
             </View>
           )}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
-          contentContainerStyle={styles.listContent}
+          contentContainerClassName="pb-6"
           onRefresh={fetchHistory}
           refreshing={isLoading}
         />
@@ -81,110 +83,3 @@ export default function HistoryDashboard() {
     </View>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: t.bgSubtle,
-    },
-    header: {
-      paddingTop: sp[4],
-      paddingBottom: sp[2],
-    },
-    summaryCard: {
-      backgroundColor: t.primary,
-      borderRadius: r.lg,
-      padding: sp[4],
-      marginHorizontal: sp[4],
-      marginBottom: sp[4],
-      elevation: 2,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 4,
-    },
-    summaryLabel: {
-      color: "#85f8c4", // Light green tint
-      textTransform: "uppercase",
-      fontWeight: fw.semibold,
-      fontSize: fs.xs,
-      letterSpacing: 0.5,
-    },
-    summaryAmount: {
-      color: "#ffffff",
-      fontSize: fs["2xl"],
-      fontWeight: fw.bold,
-      marginTop: sp[1],
-    },
-    summarySubtext: {
-      color: "rgba(255, 255, 255, 0.8)",
-      fontSize: fs.xs,
-      marginTop: sp[2],
-      fontStyle: "italic",
-    },
-    sectionTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      marginHorizontal: sp[4],
-      marginTop: sp[2],
-    },
-    listContent: {
-      paddingBottom: sp[6],
-    },
-    elementWrapper: {
-      backgroundColor: t.bgElevated,
-      marginHorizontal: sp[4],
-      borderRadius: r.md,
-      overflow: "hidden",
-      borderWidth: 1,
-      borderColor: t.border,
-      marginVertical: sp[1],
-    },
-    separator: {
-      height: 0,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    loaderColor: {
-      color: t.primary,
-    },
-    emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: sp[8],
-      marginTop: 80,
-    },
-    emptyIconContainer: {
-      width: 80,
-      height: 80,
-      borderRadius: r.full,
-      backgroundColor: t.bgElevated,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: sp[4],
-      borderWidth: 1,
-      borderColor: t.border,
-    },
-    emptyIconColor: {
-      color: t.textMuted,
-    },
-    emptyTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      textAlign: "center",
-      marginBottom: sp[2],
-    },
-    emptyText: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      textAlign: "center",
-      lineHeight: 22,
-    },
-  }),
-);

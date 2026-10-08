@@ -6,6 +6,7 @@ export function useCreditors() {
   const error = useCreditorStore((state) => state.error);
   const fetchCreditors = useCreditorStore((state) => state.fetchCreditors);
   const addCreditor = useCreditorStore((state) => state.addCreditor);
+  const updateCreditor = useCreditorStore((state) => state.updateCreditor);
   const deleteCreditor = useCreditorStore((state) => state.deleteCreditor);
 
   return {
@@ -14,6 +15,7 @@ export function useCreditors() {
     error,
     fetchCreditors,
     addCreditor,
+    updateCreditor,
     deleteCreditor,
   };
 }

@@ -1,28 +1,26 @@
-import { Label, SubTitle, Title } from "@/components/StyledText";
-import { useCreditors } from "@/features/seller/hooks/useCreditors";
-import { makeStyles } from "@/hooks/useTheme";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { useRouter } from "expo-router";
+import { Building2, Plus } from "lucide-react-native";
 import { useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   Pressable,
-  StyleSheet,
+  Text,
   View,
 } from "react-native";
+import { useCreditors } from "@/features/seller/hooks/useCreditors";
+import type { Creditor } from "@/types";
 import CreditorCard from "./components/CreditorCard";
 
 export default function SellerDashboard() {
-  const styles = useStyles();
   const router = useRouter();
-  const { creditors, isLoading, error, fetchCreditors, deleteCreditor } =
+  const { creditors, isLoading, fetchCreditors, deleteCreditor } =
     useCreditors();
 
   useEffect(() => {
     fetchCreditors();
-  }, []);
+  }, [fetchCreditors]);
 
   const handleDelete = (id: number) => {
     Alert.alert(
@@ -41,48 +39,63 @@ export default function SellerDashboard() {
     );
   };
 
+  const handleEdit = (creditor: Creditor) => {
+    router.push({
+      pathname: "/(tabs)/debts/addCreditor",
+      params: { id: creditor.id.toString() },
+    });
+  };
+
   const renderHeader = () => (
-    <View style={styles.header}>
-      <Title style={styles.headerTitle}>Mis Acreedores</Title>
-      <SubTitle style={styles.headerSubtitle}>
+    <View className="px-4 py-4 pb-2">
+      <Text className="text-2xl font-bold text-primary">Mis Acreedores</Text>
+      <Text className="text-base text-slate-400 mt-1">
         Lista y gestiona las entidades a las que les debes
-      </SubTitle>
+      </Text>
     </View>
   );
 
   const renderEmpty = () => (
-    <View style={styles.emptyContainer}>
-      <View style={styles.emptyIconContainer}>
-        <MaterialIcons
-          name="account-balance"
+    <View className="items-center justify-center px-8 mt-20">
+      <View className="w-20 h-20 rounded-full bg-slate-50 items-center justify-center mb-4">
+        <Building2
           size={48}
-          color={styles.emptyIconColor.color}
+          color="#94a3b8"
         />
       </View>
-      <Label style={styles.emptyTitle}>No hay acreedores registrados</Label>
-      <SubTitle style={styles.emptyText}>
+      <Text className="text-lg font-bold text-center mb-2">
+        No hay acreedores registrados
+      </Text>
+      <Text className="text-center text-slate-400 leading-6">
         Comienza agregando tu primer acreedor para llevar el control de tus
         deudas.
-      </SubTitle>
+      </Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-white">
       {isLoading && creditors.length === 0 ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={styles.loaderColor.color} />
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color="#064E3B"
+          />
         </View>
       ) : (
         <FlatList
           data={creditors}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <CreditorCard creditor={item} onDelete={handleDelete} />
+            <CreditorCard
+              creditor={item}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
           ListHeaderComponent={renderHeader}
           ListEmptyComponent={renderEmpty}
-          contentContainerStyle={styles.listContent}
+          contentContainerClassName="pb-24"
           onRefresh={fetchCreditors}
           refreshing={isLoading}
         />
@@ -90,100 +103,15 @@ export default function SellerDashboard() {
 
       {/* FAB Largo */}
       <Pressable
-        style={styles.fab}
-        onPress={() => router.push("/(tabs)/dashboard/add")}
+        className="absolute bottom-6 right-4 bg-primary flex-row items-center px-4 py-3 rounded-full gap-2 android:elevation-md ios:shadow-black ios:shadow-opacity-25 ios:shadow-offset-[0,4] ios:shadow-radius-4"
+        onPress={() => router.push("/(tabs)/debts/addCreditor")}
       >
-        <MaterialIcons name="add" size={24} color="#ffffff" />
-        <Label style={styles.fabText}>Agregar Acreedor</Label>
+        <Plus
+          size={24}
+          color="#ffffff"
+        />
+        <Text className="text-white font-bold">Agregar Acreedor</Text>
       </Pressable>
     </View>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: t.bg,
-    },
-    header: {
-      paddingHorizontal: sp[4],
-      paddingTop: sp[4],
-      paddingBottom: sp[2],
-    },
-    headerTitle: {
-      fontSize: fs["2xl"],
-      fontWeight: fw.bold,
-      color: t.primary,
-    },
-    headerSubtitle: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      marginTop: sp[1],
-    },
-    listContent: {
-      paddingBottom: 100, // Espacio para el FAB
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    loaderColor: {
-      color: t.primary,
-    },
-    emptyContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: sp[8],
-      marginTop: 80,
-    },
-    emptyIconContainer: {
-      width: 80,
-      height: 80,
-      borderRadius: r.full,
-      backgroundColor: t.bgSubtle,
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: sp[4],
-    },
-    emptyIconColor: {
-      color: t.textMuted,
-    },
-    emptyTitle: {
-      fontSize: fs.lg,
-      fontWeight: fw.bold,
-      color: t.text,
-      textAlign: "center",
-      marginBottom: sp[2],
-    },
-    emptyText: {
-      fontSize: fs.base,
-      color: t.textMuted,
-      textAlign: "center",
-      lineHeight: 22,
-    },
-    fab: {
-      position: "absolute",
-      bottom: sp[6],
-      right: sp[4],
-      backgroundColor: t.primary,
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: sp[4],
-      paddingVertical: sp[3],
-      borderRadius: r.full,
-      gap: sp[2],
-      elevation: 6,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-    },
-    fabText: {
-      color: "#ffffff",
-      fontWeight: fw.bold,
-      fontSize: fs.base,
-    },
-  }),
-);

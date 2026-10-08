@@ -1,6 +1,6 @@
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { Tabs } from "expo-router";
-import { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import type { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import { Home, Receipt, ReceiptText } from "lucide-react-native";
 
 type ClientTabsProps = {
   options: BottomTabNavigationOptions;
@@ -15,7 +15,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Inicio",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="home" color={color} size={iconSize} />
+            <Home
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -24,7 +27,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Deudas",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="receipt" color={color} size={iconSize} />
+            <Receipt
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />
@@ -33,7 +39,10 @@ export default function ClientTabs({ options, iconSize }: ClientTabsProps) {
         options={{
           title: "Historial",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name="receipt-long" color={color} size={iconSize} />
+            <ReceiptText
+              color={color}
+              size={iconSize}
+            />
           ),
         }}
       />

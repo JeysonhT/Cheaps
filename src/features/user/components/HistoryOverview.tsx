@@ -1,34 +1,40 @@
-import React, { useEffect } from "react";
-import Card from "@/components/Card";
-import { SubTitle, Title } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
 import { Link } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import Card from "@/components/Card";
 import HistoryElement from "@/features/history/components/HistoryElement";
 import { useHistory } from "@/features/history/hooks/useHistory";
+import { useGetUserStats } from "../hooks/useGetUserStats";
 
 export default function HistoryOverview() {
-  const styles = useStyles();
   const { payments, fetchHistory } = useHistory();
+
+  const { userFullName } = useGetUserStats();
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const displayedPayments = payments.slice(0, 3);
-  const showMore = payments.length > 3;
+  const greetingName = userFullName
+    ? `${userFullName.name} ${userFullName.lastName}`
+    : "usuario";
 
   return (
-    <View style={styles.mainView}>
-      <Title>Historial reciente</Title>
+    <View className="p-2 shrink">
+      <Text className="text-lg text-slate-900 font-bold">
+        Historial reciente
+      </Text>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.slider}
+        contentContainerClassName="pb-2"
       >
-        <Card style={styles.card}>
+        <Card className="p-0 bg-slate-200 mx-1 rounded-lg overflow-hidden">
           {payments.length === 0 ? (
-            <View style={styles.emptyView}>
-              <SubTitle style={styles.emptyText}>No hay abonos registrados recientemente</SubTitle>
+            <View className="items-center justify-center p-4">
+              <Text className="text-sm text-slate-500 italic text-center">
+                {`Hola ${greetingName},\n\nAún no tienes pagos registrados.`}
+              </Text>
             </View>
           ) : (
             <View>
@@ -36,7 +42,7 @@ export default function HistoryOverview() {
                 <View key={payment.id}>
                   <HistoryElement payment={payment} />
                   {index < displayedPayments.length - 1 && (
-                    <View style={styles.separator} />
+                    <View className="border-b border-slate-300" />
                   )}
                 </View>
               ))}
@@ -44,9 +50,14 @@ export default function HistoryOverview() {
           )}
 
           {payments.length > 0 && (
-            <Link href="/(tabs)/history" asChild>
-              <Pressable style={styles.presableView}>
-                <SubTitle>Ver historial Completo</SubTitle>
+            <Link
+              href="/(tabs)/history"
+              asChild
+            >
+              <Pressable className="bg-slate-200 rounded-b-lg h-[50] items-center justify-center active:opacity-80">
+                <Text className="text-base font-medium text-slate-900">
+                  Ver historial Completo
+                </Text>
               </Pressable>
             </Link>
           )}
@@ -55,35 +66,3 @@ export default function HistoryOverview() {
     </View>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    mainView: { padding: sp[2], flexShrink: 1 },
-    card: {
-      padding: sp[0],
-      backgroundColor: t.bgSubtle,
-      marginHorizontal: sp[1],
-      borderRadius: r.md,
-      overflow: "hidden",
-    },
-    separator: { borderBottomWidth: 1, borderBottomColor: t.bgMuted },
-    presableView: {
-      backgroundColor: t.bgMuted,
-      borderBottomStartRadius: r.md,
-      borderBottomEndRadius: r.md,
-      height: 50,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    slider: { paddingBottom: sp[2] },
-    emptyView: {
-      padding: sp[4],
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    emptyText: {
-      fontStyle: "italic",
-      textAlign: "center",
-    },
-  }),
-);

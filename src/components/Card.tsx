@@ -1,19 +1,15 @@
-import { StyleSheet, View, ViewProps } from "react-native";
-import { makeStyles } from "../hooks/useTheme";
+import { View, type ViewProps } from "react-native";
 
-const cardStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    card: {
-      marginTop: sp[2],
-      padding: sp[4],
-      elevation: 1,
-      borderRadius: r.md,
-    },
-  }),
-);
+interface CardProps extends ViewProps {
+  className?: string;
+}
 
-export default function Card({ style, ...props }: ViewProps) {
-  const styles = cardStyles();
-
-  return <View style={[styles.card, style]} {...props} />;
+export default function Card({ style, className, ...props }: CardProps) {
+  return (
+    <View
+      className={`p-4 shadow-sm rounded-md ${className ?? ""}`}
+      style={style}
+      {...props}
+    />
+  );
 }

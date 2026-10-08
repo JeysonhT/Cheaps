@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/SqliteHelper";
-import { PayDebt, CreatePayDebtDTO } from "@/types";
+import type { CreatePayDebtDTO, PayDebt } from "@/types";
 
 export interface DbPayDebtRow {
   id: number;
@@ -14,7 +14,7 @@ export const paymentService = {
     const db = await getDb();
     const rows = await db.getAllAsync<DbPayDebtRow>(
       "SELECT id, id_debt, reference, amount, pay_date FROM pay_debt WHERE id_debt = ? ORDER BY pay_date DESC",
-      debtId
+      debtId,
     );
     return rows.map((row) => ({
       id: row.id,
@@ -27,7 +27,7 @@ export const paymentService = {
 
   async create(dto: CreatePayDebtDTO): Promise<PayDebt> {
     const db = await getDb();
-    
+
     // Ejecutar en una transacción para mantener la consistencia
     // (abrir transacción usando sql ya que expo-sqlite soporta transacciones)
     await db.execAsync("BEGIN TRANSACTION");
@@ -37,18 +37,18 @@ export const paymentService = {
         dto.idDebt,
         dto.reference || null,
         dto.amount,
-        dto.payDate
+        dto.payDate,
       );
-      
+
       // Restar el monto pagado del saldo pendiente actual de la deuda
       await db.runAsync(
         "UPDATE debts SET current_amount = MAX(0, current_amount - ?) WHERE id = ?",
         dto.amount,
-        dto.idDebt
+        dto.idDebt,
       );
-      
+
       await db.execAsync("COMMIT");
-      
+
       return {
         id: result.lastInsertRowId,
         idDebt: dto.idDebt,

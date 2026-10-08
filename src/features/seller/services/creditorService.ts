@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/SqliteHelper";
-import { CreateCreditorDTO, Creditor } from "@/types";
+import type { CreateCreditorDTO, Creditor } from "@/types";
 
 export interface DbCreditor {
   id: number;

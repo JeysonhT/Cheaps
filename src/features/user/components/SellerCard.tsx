@@ -1,36 +1,41 @@
-import Card from "@/components/Card";
-import { Label, SubTitle } from "@/components/StyledText";
-import { makeStyles } from "@/hooks/useTheme";
-import { Creditor, DebtType, DebtWithCreditor } from "@/types";
-import MaterialIcons from "@react-native-vector-icons/material-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, View } from "react-native";
+import {
+  Building2,
+  Car,
+  CreditCard,
+  Home,
+  type LucideIcon,
+  MoreHorizontal,
+  User,
+  Zap,
+} from "lucide-react-native";
+import { Text, View } from "react-native";
+import Card from "@/components/Card";
+import type { Creditor, DebtType, DebtWithCreditor } from "@/types";
 
 interface SellerCardProps {
   creditor: Creditor;
   largestDebt: DebtWithCreditor | null;
 }
 
-const getDebtIcon = (type: DebtType): string => {
+const getDebtIcon = (type: DebtType): LucideIcon => {
   switch (type) {
     case "personal":
-      return "person";
+      return User;
     case "tarjeta":
-      return "credit-card";
+      return CreditCard;
     case "hipoteca":
-      return "home";
+      return Home;
     case "auto":
-      return "directions-car";
+      return Car;
     case "servicio":
-      return "bolt";
+      return Zap;
     default:
-      return "more-horiz";
+      return MoreHorizontal;
   }
 };
 
 export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
-  const styles = useStyles();
-
   // Calcular progreso y valores financieros
   const hasDebt = largestDebt !== null;
   const original = largestDebt ? largestDebt.amount : 0;
@@ -42,131 +47,62 @@ export default function SellerCard({ creditor, largestDebt }: SellerCardProps) {
     return `C$ ${val.toLocaleString("es-NI", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
+  const IconComponent = hasDebt ? getDebtIcon(largestDebt.type) : Building2;
+
   return (
-    <Card style={styles.card}>
-      <View style={styles.mainView}>
-        <View style={styles.header}>
-          <View style={styles.iconView}>
-            <MaterialIcons
-              name={
-                hasDebt
-                  ? (getDebtIcon(largestDebt!.type) as any)
-                  : "corporate-fare"
-              }
+    <Card className="bg-slate-200 w-[280] p-3">
+      <View className="gap-2">
+        <View className="flex-row items-center">
+          <View className="w-10 h-10 rounded-full bg-primary items-center justify-center">
+            <IconComponent
               color="#ffffff"
               size={24}
             />
           </View>
-          <View style={styles.textContainer}>
-            <Label style={styles.highlightText} numberOfLines={1}>
+          <View className="flex-1 justify-center ml-2">
+            <Text
+              className="font-bold"
+              numberOfLines={1}
+            >
               {creditor.name}
-            </Label>
-            <SubTitle numberOfLines={1}>
+            </Text>
+            <Text
+              className="text-xs text-slate-500"
+              numberOfLines={1}
+            >
               {hasDebt ? largestDebt!.name : "Sin deudas activas"}
-            </SubTitle>
+            </Text>
           </View>
         </View>
 
-        <View style={styles.progressSection}>
-          <View style={styles.bodyHead}>
-            <SubTitle>Progreso</SubTitle>
-            <SubTitle
-              style={styles.text}
-            >{`${Math.round(progressPct * 100)}%`}</SubTitle>
+        <View className="mt-1">
+          <View className="flex-row mb-1 justify-between items-center">
+            <Text className="text-xs text-slate-500">Progreso</Text>
+            <Text className="text-xs text-slate-900">{`${Math.round(progressPct * 100)}%`}</Text>
           </View>
           {/* Progress bar track */}
-          <View style={styles.progressTrack}>
+          <View className="height-6 rounded-full bg-slate-400 overflow-hidden">
             {/* Gradient fill */}
             <LinearGradient
-              colors={[
-                styles.startProgressColor.color,
-                styles.endProgressColor.color,
-              ]}
+              colors={["#064E3B", "#059669"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[
-                styles.progressFill,
-                { width: `${Math.round(progressPct * 100)}%` },
-              ]}
+              style={{
+                width: `${Math.round(progressPct * 100)}%`,
+                height: "100%",
+                borderRadius: 100,
+              }}
             />
           </View>
         </View>
 
-        <View style={styles.footer}>
-          <SubTitle>Restante</SubTitle>
-          <Label style={styles.highlightText}>{formatCurrency(current)}</Label>
+        <View className="flex-row justify-between items-center mt-1 border-t-4 border-t-slate-400">
+          <Text className="text-xs text-slate-500">Restante</Text>
+          <Text className="font-bold text-slate-900">
+            {formatCurrency(current)}
+          </Text>
         </View>
       </View>
     </Card>
   );
 }
-
-const useStyles = makeStyles((t, sp, fs, fw, r) =>
-  StyleSheet.create({
-    card: {
-      backgroundColor: t.bgSubtle,
-      width: 280,
-      padding: sp[3],
-    },
-    mainView: {
-      flexDirection: "column",
-      gap: sp[2],
-    },
-    iconView: {
-      borderRadius: r.full,
-      backgroundColor: t.primary,
-      width: 40,
-      height: 40,
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    highlightText: {
-      fontWeight: fw.bold,
-      color: t.text,
-      fontSize: fs.base,
-    },
-    text: { color: t.text },
-    textContainer: {
-      flex: 1,
-      justifyContent: "center",
-      marginLeft: sp[2],
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-    },
-    progressSection: {
-      marginTop: sp[1],
-    },
-    bodyHead: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginBottom: sp[1],
-    },
-    startProgressColor: {
-      color: t.primary,
-    },
-    endProgressColor: {
-      color: t.tertiary,
-    },
-    progressTrack: {
-      height: 6,
-      borderRadius: r.full,
-      backgroundColor: t.bgMuted,
-      overflow: "hidden",
-    },
-    progressFill: {
-      height: "100%",
-      borderRadius: r.full,
-    },
-    footer: {
-      marginTop: sp[1],
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderTopWidth: 1,
-      borderTopColor: t.border,
-      paddingTop: sp[2],
-    },
-  }),
-);

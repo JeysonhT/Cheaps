@@ -1,7 +1,7 @@
+import type { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ClientTabs from "@/components/ClientTabs";
 import Colors from "@/constants/Colors";
-import { BottomTabNavigationOptions } from "expo-router/build/react-navigation/bottom-tabs";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -14,5 +14,10 @@ export default function TabLayout() {
     },
   };
 
-  return <ClientTabs options={tabsOptions} iconSize={24} />;
+  return (
+    <ClientTabs
+      options={tabsOptions}
+      iconSize={24}
+    />
+  );
 }

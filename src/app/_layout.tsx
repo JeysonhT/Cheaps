@@ -1,3 +1,4 @@
+import "../global.css";
 import { useFonts } from "expo-font";
 import { DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -6,6 +7,7 @@ import { useEffect } from "react";
 import { useColorScheme } from "react-native";
 import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ToastMessage, toastConfig } from "@/components/Toast/CheapsToast";
 import { getDb } from "../lib/SqliteHelper";
 
 export {
@@ -18,7 +20,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Inter: require("../assets/fonts/Inter_28pt-Regular.ttf"),
+    Outfit: require("../assets/fonts/Outfit-Regular.ttf"),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -54,11 +57,21 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <Stack initialRouteName="index">
           {/* Guardia de rol — siempre entra aquí primero */}
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="(seller)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="(seller)"
+            options={{ headerShown: false }}
+          />
         </Stack>
-        <StatusBar style={scheme === "dark" ? "dark" : "light"}></StatusBar>
+        <StatusBar style={"dark"} />
+        <ToastMessage config={toastConfig} />
       </ThemeProvider>
     </SafeAreaProvider>
   );

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { creditorService } from "../features/seller/services/creditorService";
-import { CreateCreditorDTO, Creditor } from "../types";
+import type { CreateCreditorDTO, Creditor } from "../types";
 
 interface CreditorState {
   creditors: Creditor[];
@@ -8,6 +8,10 @@ interface CreditorState {
   error: string | null;
   fetchCreditors: () => Promise<void>;
   addCreditor: (dto: CreateCreditorDTO) => Promise<void>;
+  updateCreditor: (
+    id: number,
+    dto: Partial<CreateCreditorDTO>,
+  ) => Promise<void>;
   deleteCreditor: (id: number) => Promise<void>;
 }
 
@@ -42,6 +46,25 @@ export const useCreditorStore = create<CreditorState>((set) => ({
     } catch (err: any) {
       set({
         error: err.message || "Error al agregar acreedor",
+        isLoading: false,
+      });
+      throw err;
+    }
+  },
+
+  updateCreditor: async (id, dto) => {
+    set({ isLoading: true, error: null });
+    try {
+      await creditorService.update(id, dto);
+      set((state) => ({
+        creditors: state.creditors
+          .map((c) => (c.id === id ? { ...c, ...dto } : c))
+          .sort((a, b) => a.name.localeCompare(b.name)),
+        isLoading: false,
+      }));
+    } catch (err: any) {
+      set({
+        error: err.message || "Error al actualizar acreedor",
         isLoading: false,
       });
       throw err;
